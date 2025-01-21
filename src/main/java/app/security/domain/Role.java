@@ -1,5 +1,6 @@
 package app.security.domain;
 
+import app.security.Enum.TypeRole;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
@@ -15,5 +16,5 @@ import lombok.NoArgsConstructor;
 public class Role {
     @Id @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
-    private String name;
+    private TypeRole name;
 }
