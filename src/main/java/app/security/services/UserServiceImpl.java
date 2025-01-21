@@ -22,7 +22,7 @@ public class UserServiceImpl implements UserService {
     private final RoleRepository roleRepository;
 
     @Override
-    public User SaveUser(User user) {
+    public User saveUser(User user) {
         log.info("save new user {} in database",user.getName());
         return this.userRepository.save(user);
     }
