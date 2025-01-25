@@ -1,6 +1,7 @@
 package app.security.services;
 
 
+import app.security.Enum.TypeRole;
 import app.security.domain.Role;
 import app.security.domain.User;
 import app.security.repository.RoleRepository;
@@ -34,7 +35,7 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public void addRoleToUser(String userName, String roleName) {
+    public void addRoleToUser(String userName, TypeRole roleName) {
         log.info("Add new Role {} to User {}",userName,roleName);
     User user = this.userRepository.findByUsername(userName);
     Role role = this.roleRepository.findByname(roleName);

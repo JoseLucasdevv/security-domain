@@ -1,5 +1,6 @@
 package app.security.api;
 
+import app.security.Enum.TypeRole;
 import app.security.domain.Role;
 import app.security.domain.User;
 import app.security.services.UserService;
@@ -20,8 +21,6 @@ import java.util.List;
 public class UserResource {
 
     private final UserService userService;
-
-
 
     @GetMapping("/users")
     public ResponseEntity<List<User>> getUsers(){
@@ -48,6 +47,6 @@ public class UserResource {
     @Data
     class RoleToUserForm{
         private String userName;
-        private String roleName;
+        private TypeRole roleName;
     }
 }
