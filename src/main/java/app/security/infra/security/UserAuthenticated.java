@@ -15,11 +15,11 @@ public class UserAuthenticated implements UserDetails {
     private final User user;
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
-        List<TypeRole> roles = user.getRoles().stream().map(r -> r.getName()).toList();
-        if(roles.contains(TypeRole.ADMIN)){
+        TypeRole role = user.getRole().getName();
+        if(role == TypeRole.ADMIN){
             return List.of(new SimpleGrantedAuthority("ROLE_USER"), new SimpleGrantedAuthority("ROLE_ADMIN"));
         }
-        if(roles.contains(TypeRole.TEACHER)){
+        if(role == TypeRole.TEACHER){
             return List.of(new SimpleGrantedAuthority("ROLE_USER"), new SimpleGrantedAuthority("ROLE_TEACHER"));
         }
 
