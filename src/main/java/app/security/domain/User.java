@@ -18,6 +18,9 @@ public class User {
     private String name;
     private String username;
     private String password;
-    @ManyToMany(fetch = FetchType.EAGER)
-    private Collection<Role> roles = new ArrayList<>();
+    @ManyToOne(fetch = FetchType.EAGER)
+    private Role role;
+    @OneToMany(fetch = FetchType.EAGER)
+    private Collection<Workout> workout = new ArrayList<>();
+
 }
