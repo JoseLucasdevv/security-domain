@@ -6,6 +6,8 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.util.Date;
+
 @Entity
 @Data
 @AllArgsConstructor
@@ -19,4 +21,6 @@ public class Workout {
     private WeekDay weekday;
     private String description;
     private String nameOfTeacher;
+    private Date createdAt;
+    private Date updatedAt;
 }
