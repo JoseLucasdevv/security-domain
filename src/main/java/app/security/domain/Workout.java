@@ -18,6 +18,7 @@ public class Workout {
     private Long id;
     private String name;
     private String series;
+    @Enumerated(EnumType.STRING)
     private WeekDay weekday;
     private String description;
     private String nameOfTeacher;
