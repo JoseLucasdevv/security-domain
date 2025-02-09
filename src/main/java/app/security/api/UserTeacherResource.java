@@ -5,14 +5,13 @@ import app.security.services.UserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
-import java.net.URI;
+
 import java.util.List;
 
 @RestController
 @RequestMapping("/api")
 @RequiredArgsConstructor
-public class UserResource {
+public class UserTeacherResource {
     private final UserService userService;
 
     //Teacher Resource
@@ -20,5 +19,4 @@ public class UserResource {
     public ResponseEntity<List<User>> getUsers(){
         return ResponseEntity.ok().body(userService.getUsers());
     }
-
 }

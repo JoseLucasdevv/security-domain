@@ -20,14 +20,11 @@ import org.springframework.web.bind.annotation.RestController;
 public class AuthResource {
 @Autowired
     AuthService authService;
-    @Autowired
-    private RoleRepository roleRepository;
 
     @PostMapping("/register")
     public ResponseEntity registerResource(@RequestBody RegisterDTO form){
 
         authService.register(form);
-
 
         return ResponseEntity.ok().build();
     }
