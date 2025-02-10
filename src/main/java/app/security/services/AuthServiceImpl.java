@@ -14,6 +14,8 @@ import org.springframework.security.authentication.UsernamePasswordAuthenticatio
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
+
 @Service
 public class AuthServiceImpl implements AuthService {
     @Autowired
@@ -33,8 +35,9 @@ public class AuthServiceImpl implements AuthService {
         persistUser.setUsername(form.username());
         Role roleUser = new Role();
         roleUser.setName(TypeRole.ADMIN);
-        roleRepository.save(roleUser);
+        roleUser.setUsers(List.of(persistUser));
         persistUser.setRole(roleUser);
+        roleRepository.save(roleUser);
         userService.saveUser(persistUser);
     }
 
