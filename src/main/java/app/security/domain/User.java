@@ -19,6 +19,7 @@ public class User {
     private String username;
     private String password;
     @ManyToOne(fetch = FetchType.EAGER)
+    @JoinColumn(name = "role_id")
     private Role role;
     @OneToMany(fetch = FetchType.EAGER)
     private Collection<Workout> workout = new ArrayList<>();
