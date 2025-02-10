@@ -17,10 +17,10 @@ public class UserAuthenticated implements UserDetails {
     public Collection<? extends GrantedAuthority> getAuthorities() {
         TypeRole role = user.getRole().getName();
         if(role == TypeRole.ADMIN){
-            return List.of(new SimpleGrantedAuthority("ROLE_USER"), new SimpleGrantedAuthority("ROLE_ADMIN"));
+            return List.of(new SimpleGrantedAuthority("ROLE_ADMIN"));
         }
         if(role == TypeRole.TEACHER){
-            return List.of(new SimpleGrantedAuthority("ROLE_USER"), new SimpleGrantedAuthority("ROLE_TEACHER"));
+            return List.of(new SimpleGrantedAuthority("ROLE_TEACHER"));
         }
 
         return List.of(new SimpleGrantedAuthority("ROLE_USER"));
