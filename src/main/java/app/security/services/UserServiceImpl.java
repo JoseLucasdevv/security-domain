@@ -5,7 +5,7 @@ import app.security.domain.User;
 import app.security.domain.Workout;
 import app.security.repository.UserRepository;
 import app.security.repository.WorkoutRepository;
-import jakarta.persistence.EntityNotFoundException;
+import app.security.types.WorkoutDTO;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -13,8 +13,11 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
-import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Service
@@ -63,24 +66,50 @@ public class UserServiceImpl implements UserService {
     @Override
     public Workout getSpecificWorkoutFromUser(String username, Long workoutId) {
         List<Workout> listWorkout = this.userRepository.getAllWorkoutFromUser(TypeRole.USER,username);
-
         return listWorkout.stream().filter(w -> workoutId.equals(w.getId())).findFirst().orElse(null);
+
         // return this.workoutRepository.findById(workoutId).orElseThrow(() ->  new EntityNotFoundException("Workout not found"));
 
     }
 
     @Override
-    public Void deleteWorkoutById(String username, Long workoutId) {
+    public Void deleteWorkoutById(Long userId, Long workoutId) {
         return null;
     }
 
     @Override
-    public User createWorkout(String username, Workout workout) {
-        return null;
+    public User createWorkout(Long userId, WorkoutDTO workout) {
+        User user = this.userRepository.getUserById(TypeRole.USER,userId);
+        Workout workoutEntity = new Workout();
+        workoutEntity.setName(workout.name());
+        workoutEntity.setSeries(workout.series());
+        workoutEntity.setNameOfTeacher(workout.nameOfTeacher());
+        workoutEntity.setDescription(workout.description());
+        workoutEntity.setWeekday(workout.weekday());
+        workoutEntity.setUser(user);
+        user.getWorkout().add(workoutEntity);
+        this.userRepository.save(user);
+
+
+        return this.userRepository.getUserById(TypeRole.USER,userId);
     }
 
     @Override
-    public User updateWorkout(String username, Workout workout) {
-        return null;
+    public User updateWorkout(Long workoutId,Long userId, WorkoutDTO workout) {
+        User user = this.userRepository.getUserById(TypeRole.USER,userId);
+        log.info("user here {}" ,user);
+        List<Workout> listWorkout = user.getWorkout().stream().toList();
+        Workout workoutAlreadyExist = listWorkout.stream().filter(w -> w.getId().equals(workoutId)).findFirst().orElse(null);
+        // logic to update workout and after save it in the good way my friend doesn't forget that please .
+        workoutAlreadyExist.setName(workout.name());
+        workoutAlreadyExist.setSeries(workout.series());
+        workoutAlreadyExist.setDescription(workout.description());
+        workoutAlreadyExist.setWeekday(workout.weekday());
+        workoutAlreadyExist.setUpdatedAt(LocalDateTime.now());
+        workoutRepository.save(workoutAlreadyExist);
+
+        var userAfterPersist = this.userRepository.getUserById(TypeRole.USER,userId);
+
+        return userAfterPersist;
     }
 }
