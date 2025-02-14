@@ -30,15 +30,16 @@ public class SecurityConfig{
                 .authorizeHttpRequests(auth -> auth.
                         requestMatchers(HttpMethod.POST,"api/register").permitAll().
                         requestMatchers(HttpMethod.POST,"api/auth").permitAll()
-                        .requestMatchers(HttpMethod.GET,"api/users").hasRole("ADMIN")
 
+                        .requestMatchers(HttpMethod.GET,"api/teacher/users/**").hasRole("TEACHER")
+                        .requestMatchers(HttpMethod.GET,"api/teacher/user/**").hasRole("TEACHER")
+                        .requestMatchers(HttpMethod.POST,"api/teacher/workout/save/**").permitAll()
+                        .requestMatchers(HttpMethod.PUT,"api/teacher/workout/update/**").permitAll()
 
                 ).addFilterBefore(filterValidateJWT, UsernamePasswordAuthenticationFilter.class);
-
+    
 
         return http.build();
-
-
     }
 
 
