@@ -7,19 +7,19 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import java.util.List;
+import java.util.ArrayList;
+import java.util.Collection;
 
 @Entity
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-
 public class Role {
     @Id @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
     @Enumerated(EnumType.STRING)
     private TypeRole name;
-    @OneToMany(mappedBy = "role", fetch = FetchType.LAZY)
+    @OneToMany(mappedBy = "role", cascade = CascadeType.ALL, orphanRemoval = true)
     @JsonIgnore
-    private List<User> users;
+    private Collection<User> users = new ArrayList<>();
 }
