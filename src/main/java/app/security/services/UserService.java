@@ -2,6 +2,7 @@ package app.security.services;
 
 import app.security.domain.User;
 import app.security.domain.Workout;
+import app.security.types.WorkoutDTO;
 
 import java.util.List;
 import java.util.Optional;
@@ -15,10 +16,10 @@ public interface UserService {
     User getUser(String username);
     List<User> getUsers(int pageNumber);
     List<Workout> getAllWorkoutFromUser(String username);
-    Workout getSpecificWorkoutFromUser(String username, Long workoutId);
-    Void deleteWorkoutById(String username, Long workoutId);
-    User createWorkout(String username, Workout workout);
-    User updateWorkout(String username, Workout workout);
+    Workout getSpecificWorkoutFromUser(String username , Long workoutId);
+    Void deleteWorkoutById(Long userId, Long workoutId);
+    User createWorkout(Long userId, WorkoutDTO workout);
+    User updateWorkout(Long workoutId, Long userId,WorkoutDTO workout);
 
 
 }
