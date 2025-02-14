@@ -1,12 +1,15 @@
 package app.security.domain;
 
 import app.security.Enum.WeekDay;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import java.util.Date;
+
+import java.time.LocalDateTime;
+
 
 @Entity
 @Data
@@ -22,6 +25,16 @@ public class Workout {
     private WeekDay weekday;
     private String description;
     private String nameOfTeacher;
-    private Date createdAt;
-    private Date updatedAt;
+    private LocalDateTime createdAt;
+    private LocalDateTime updatedAt;
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "user_id", nullable = false)
+    @JsonIgnore
+    private User user;
+
+    @PrePersist
+    public void prePersist(){
+        this.createdAt = LocalDateTime.now();
+    }
 }
+
