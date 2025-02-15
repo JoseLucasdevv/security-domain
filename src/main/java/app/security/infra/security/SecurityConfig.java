@@ -35,7 +35,8 @@ public class SecurityConfig{
                         .requestMatchers(HttpMethod.GET,"api/teacher/user/**").hasRole("TEACHER")
                         .requestMatchers(HttpMethod.POST,"api/teacher/workout/save/**").hasRole("TEACHER")
                         .requestMatchers(HttpMethod.PUT,"api/teacher/workout/update/**").hasRole("TEACHER")
-                        .requestMatchers(HttpMethod.GET,"api/teacher/workouts/**").hasRole("TEACHER")
+                        .requestMatchers(HttpMethod.GET,"api/teacher/workouts/**").permitAll()
+                        .requestMatchers(HttpMethod.GET,"api/teacher/workout/**").permitAll()
 
                 ).addFilterBefore(filterValidateJWT, UsernamePasswordAuthenticationFilter.class);
     
