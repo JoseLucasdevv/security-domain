@@ -15,11 +15,11 @@ public interface UserService {
     User getUserById(Long id);
     User getUser(String username);
     List<User> getUsers(int pageNumber);
-    List<WorkoutDTO> getAllWorkoutFromUser(String username);
-    Workout getSpecificWorkoutFromUser(String username , Long workoutId);
+    List<WorkoutDTO<String>> getAllWorkoutFromUser(String username);
+    WorkoutDTO<String> getSpecificWorkoutFromUser(String username , Long workoutId);
     Void deleteWorkoutById(Long userId, Long workoutId);
-    User createWorkout(Long userId, WorkoutDTO workout);
-    User updateWorkout(Long workoutId, Long userId,WorkoutDTO workout);
+    User createWorkout(Long userId, WorkoutDTO<?> workout);
+    User updateWorkout(Long workoutId, Long userId,WorkoutDTO<?> workout);
 
 
 }
