@@ -13,10 +13,8 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
-import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -58,9 +56,18 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public List<Workout> getAllWorkoutFromUser(String username) {
+    public List<WorkoutDTO> getAllWorkoutFromUser(String username) {
         log.info("get all workout from user");
-        return this.userRepository.getAllWorkoutFromUser(TypeRole.USER , username);
+
+        List<WorkoutDTO> listWorkoutDTO = new ArrayList<>();
+         List<Workout> listWorkoutDomain = this.userRepository.getAllWorkoutFromUser(TypeRole.USER , username);
+
+         listWorkoutDomain.stream().forEach(w ->{
+             WorkoutDTO workoutDTO = new WorkoutDTO(w.getId(),w.getName(),w.getSeries(),w.getWeekday(),w.getDescription(),w.getNameOfTeacher(),w.getUser(),w.getCreatedAt(),w.getUpdatedAt());
+             listWorkoutDTO.add(workoutDTO);
+         });
+
+        return listWorkoutDTO;
     }
 
     @Override
