@@ -15,7 +15,7 @@ public interface UserService {
     User getUserById(Long id);
     User getUser(String username);
     List<User> getUsers(int pageNumber);
-    List<Workout> getAllWorkoutFromUser(String username);
+    List<WorkoutDTO> getAllWorkoutFromUser(String username);
     Workout getSpecificWorkoutFromUser(String username , Long workoutId);
     Void deleteWorkoutById(Long userId, Long workoutId);
     User createWorkout(Long userId, WorkoutDTO workout);
