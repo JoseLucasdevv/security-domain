@@ -41,8 +41,12 @@ public class UserTeacherResource {
         return ResponseEntity.status(201).body(this.userService.updateWorkout(workoutId,userId,workout));
     }
     @GetMapping("/teacher/workouts/{username}")
-    public ResponseEntity<List<WorkoutDTO>> getAllTrainingFromUser(@PathVariable String username){
+    public ResponseEntity<List<WorkoutDTO<String>>> getAllTrainingFromUser(@PathVariable String username){
         return ResponseEntity.ok(this.userService.getAllWorkoutFromUser(username));
     }
 
+    @GetMapping("/teacher/workout/{username}/{workoutId}")
+    public ResponseEntity<WorkoutDTO> getTrainingFromUser(@PathVariable String username,@PathVariable Long workoutId){
+        return ResponseEntity.ok(this.userService.getSpecificWorkoutFromUser(username, workoutId));
+    }
 }
