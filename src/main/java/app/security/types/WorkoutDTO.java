@@ -1,9 +1,6 @@
 package app.security.types;
 
 import app.security.Enum.WeekDay;
-import app.security.domain.User;
-
-
 import java.time.LocalDateTime;
 
 
