@@ -56,14 +56,14 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public List<WorkoutDTO> getAllWorkoutFromUser(String username) {
+    public List<WorkoutDTO<String>> getAllWorkoutFromUser(String username) {
         log.info("get all workout from user");
 
-        List<WorkoutDTO> listWorkoutDTO = new ArrayList<>();
+        List<WorkoutDTO<String>> listWorkoutDTO = new ArrayList<>();
          List<Workout> listWorkoutDomain = this.userRepository.getAllWorkoutFromUser(TypeRole.USER , username);
 
          listWorkoutDomain.stream().forEach(w ->{
-             WorkoutDTO workoutDTO = new WorkoutDTO(w.getId(),w.getName(),w.getSeries(),w.getWeekday(),w.getDescription(),w.getNameOfTeacher(),w.getUser(),w.getCreatedAt(),w.getUpdatedAt());
+             WorkoutDTO<String> workoutDTO = new WorkoutDTO<String>(w.getId(),w.getName(),w.getSeries(),w.getWeekday(),w.getDescription(),w.getNameOfTeacher(),w.getUser().getUsername(),w.getCreatedAt(),w.getUpdatedAt());
              listWorkoutDTO.add(workoutDTO);
          });
 
@@ -71,10 +71,12 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public Workout getSpecificWorkoutFromUser(String username, Long workoutId) {
+    public WorkoutDTO<String> getSpecificWorkoutFromUser(String username, Long workoutId) {
         List<Workout> listWorkout = this.userRepository.getAllWorkoutFromUser(TypeRole.USER,username);
-        return listWorkout.stream().filter(w -> workoutId.equals(w.getId())).findFirst().orElse(null);
+        Workout workout =  listWorkout.stream().filter(w -> workoutId.equals(w.getId())).findFirst().orElse(null);
 
+        assert workout != null;
+        return new WorkoutDTO<String>(workout.getId(),workout.getName(),workout.getSeries(),workout.getWeekday(),workout.getDescription(),workout.getNameOfTeacher(),workout.getUser().getUsername(),workout.getCreatedAt(),workout.getUpdatedAt());
         // return this.workoutRepository.findById(workoutId).orElseThrow(() ->  new EntityNotFoundException("Workout not found"));
 
     }
@@ -85,7 +87,7 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public User createWorkout(Long userId, WorkoutDTO workout) {
+    public User createWorkout(Long userId, WorkoutDTO<?> workout) {
         User user = this.userRepository.getUserById(TypeRole.USER,userId);
         Workout workoutEntity = new Workout();
         workoutEntity.setName(workout.name());
@@ -102,7 +104,7 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public User updateWorkout(Long workoutId,Long userId, WorkoutDTO workout) {
+    public User updateWorkout(Long workoutId,Long userId, WorkoutDTO<?> workout) {
         User user = this.userRepository.getUserById(TypeRole.USER,userId);
         log.info("user here {}" ,user);
         List<Workout> listWorkout = user.getWorkout().stream().toList();
