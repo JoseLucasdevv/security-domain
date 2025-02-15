@@ -9,11 +9,10 @@ import java.util.Optional;
 
 public interface UserService {
     //userConsumer
-    User saveUser(User user);
+    void saveUser(User user);
 
 //    userTeacher
     User getUserById(Long id);
-    User getUser(String username);
     List<User> getUsers(int pageNumber);
     List<WorkoutDTO<String>> getAllWorkoutFromUser(String username);
     WorkoutDTO<String> getSpecificWorkoutFromUser(String username , Long workoutId);
