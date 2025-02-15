@@ -28,9 +28,9 @@ public class UserServiceImpl implements UserService {
 
 
     @Override
-    public User saveUser(User user) {
+    public void saveUser(User user) {
         log.info("save new user {} in database",user.getName());
-        return this.userRepository.save(user);
+        this.userRepository.save(user);
     }
 
     @Override
@@ -38,13 +38,6 @@ public class UserServiceImpl implements UserService {
         var user = this.userRepository.getUserById(TypeRole.USER,id);
         log.info("get user {}",user.getUsername());
         return user;
-    }
-
-
-    @Override
-    public User getUser(String username) {
-        log.info("get user {}",username );
-        return this.userRepository.findByUsername(username);
     }
 
     @Override
