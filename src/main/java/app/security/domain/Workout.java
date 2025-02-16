@@ -1,5 +1,6 @@
 package app.security.domain;
 
+import app.security.Enum.MuscularGroup;
 import app.security.Enum.WeekDay;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
@@ -21,6 +22,8 @@ public class Workout {
     private Long id;
     private String name;
     private String series;
+    @Enumerated(EnumType.STRING)
+    private MuscularGroup muscularGroup;
     @Enumerated(EnumType.STRING)
     private WeekDay weekday;
     private String description;
