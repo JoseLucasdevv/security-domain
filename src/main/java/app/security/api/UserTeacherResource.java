@@ -50,4 +50,10 @@ public class UserTeacherResource {
     public ResponseEntity<WorkoutDTO> getTrainingFromUser(@PathVariable String username,@PathVariable Long workoutId){
         return ResponseEntity.ok(this.userService.getSpecificWorkoutFromUser(username, workoutId));
     }
+
+    @DeleteMapping("/teacher/workout/delete/{userId}/{workoutId}")
+    public ResponseEntity deleteWorkout(@PathVariable Long userId,@PathVariable Long workoutId){
+        this.userService.deleteWorkoutById(userId,workoutId);
+        return ResponseEntity.ok().build();
+    }
 }
