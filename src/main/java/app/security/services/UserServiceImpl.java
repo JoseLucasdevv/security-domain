@@ -81,6 +81,11 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public Void deleteWorkoutById(Long userId, Long workoutId) {
+
+        User user = this.userRepository.getUserById(TypeRole.USER,userId);
+        user.getWorkout().removeIf(w -> w.getId().equals(workoutId));
+        this.userRepository.save(user);
+
         return null;
     }
 
