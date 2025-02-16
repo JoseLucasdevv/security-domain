@@ -61,7 +61,7 @@ public class UserServiceImpl implements UserService {
          List<Workout> listWorkoutDomain = this.userRepository.getAllWorkoutFromUser(TypeRole.USER , username);
 
          listWorkoutDomain.stream().forEach(w ->{
-             WorkoutDTO<String> workoutDTO = new WorkoutDTO<String>(w.getId(),w.getName(),w.getSeries(),w.getWeekday(),w.getDescription(),w.getNameOfTeacher(),w.getUser().getUsername(),w.getCreatedAt(),w.getUpdatedAt());
+             WorkoutDTO<String> workoutDTO = new WorkoutDTO<String>(w.getId(),w.getName(),w.getSeries(),w.getWeekday(),w.getMuscularGroup(),w.getDescription(),w.getNameOfTeacher(),w.getUser().getUsername(),w.getCreatedAt(),w.getUpdatedAt());
              listWorkoutDTO.add(workoutDTO);
          });
 
@@ -74,7 +74,7 @@ public class UserServiceImpl implements UserService {
         Workout workout =  listWorkout.stream().filter(w -> workoutId.equals(w.getId())).findFirst().orElse(null);
 
         assert workout != null;
-        return new WorkoutDTO<String>(workout.getId(),workout.getName(),workout.getSeries(),workout.getWeekday(),workout.getDescription(),workout.getNameOfTeacher(),workout.getUser().getUsername(),workout.getCreatedAt(),workout.getUpdatedAt());
+        return new WorkoutDTO<String>(workout.getId(),workout.getName(),workout.getSeries(),workout.getWeekday(),workout.getMuscularGroup(),workout.getDescription(),workout.getNameOfTeacher(),workout.getUser().getUsername(),workout.getCreatedAt(),workout.getUpdatedAt());
         // return this.workoutRepository.findById(workoutId).orElseThrow(() ->  new EntityNotFoundException("Workout not found"));
 
     }
@@ -95,6 +95,7 @@ public class UserServiceImpl implements UserService {
         Workout workoutEntity = new Workout();
         workoutEntity.setName(workout.name());
         workoutEntity.setSeries(workout.series());
+        workoutEntity.setMuscularGroup(workout.musculargroup());
         workoutEntity.setNameOfTeacher(workout.nameOfTeacher());
         workoutEntity.setDescription(workout.description());
         workoutEntity.setWeekday(workout.weekday());
@@ -116,6 +117,7 @@ public class UserServiceImpl implements UserService {
         workoutAlreadyExist.setName(workout.name());
         workoutAlreadyExist.setSeries(workout.series());
         workoutAlreadyExist.setDescription(workout.description());
+        workoutAlreadyExist.setMuscularGroup(workout.musculargroup());
         workoutAlreadyExist.setNameOfTeacher(workout.nameOfTeacher());
         workoutAlreadyExist.setWeekday(workout.weekday());
         workoutAlreadyExist.setUpdatedAt(LocalDateTime.now());
