@@ -24,4 +24,9 @@ public class User {
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
     private Collection<Workout> workout = new ArrayList<>();
 
+
+    @Override
+    public String toString() {
+        return this.id + " " + this.name;
+    }
 }
