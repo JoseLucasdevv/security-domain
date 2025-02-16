@@ -2,6 +2,7 @@ package app.security.api;
 
 import app.security.domain.User;
 import app.security.services.UserService;
+import app.security.types.UserDTO;
 import app.security.types.WorkoutDTO;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -21,23 +22,23 @@ public class UserTeacherResource {
 
     //Teacher Resource
     @GetMapping("/teacher/users/{pageNumber}")
-    public ResponseEntity<List<User>> getUsers(@PathVariable int pageNumber){
+    public ResponseEntity<List<UserDTO>> getUsers(@PathVariable int pageNumber){
 
         return ResponseEntity.ok().body(userService.getUsers(pageNumber));
     }
 
     @GetMapping("/teacher/user/{id}")
-    public ResponseEntity<User> getUser(@PathVariable Long id){
+    public ResponseEntity<UserDTO> getUser(@PathVariable Long id){
             return ResponseEntity.ok().body(userService.getUserById(id));
     }
 
     @PostMapping("/teacher/workout/save/{userId}")
-    public ResponseEntity<User> saveWorkout(@PathVariable Long userId,@RequestBody WorkoutDTO workout){
+    public ResponseEntity<UserDTO> saveWorkout(@PathVariable Long userId,@RequestBody WorkoutDTO workout){
         return ResponseEntity.status(201).body(this.userService.createWorkout(userId,workout));
     }
 
     @PutMapping("/teacher/workout/update/{userId}/{workoutId}")
-    public ResponseEntity<User> updateWorkout(@PathVariable Long userId,@PathVariable Long workoutId,@RequestBody WorkoutDTO workout){
+    public ResponseEntity<UserDTO> updateWorkout(@PathVariable Long userId,@PathVariable Long workoutId,@RequestBody WorkoutDTO workout){
         return ResponseEntity.status(201).body(this.userService.updateWorkout(workoutId,userId,workout));
     }
     @GetMapping("/teacher/workouts/{username}")
