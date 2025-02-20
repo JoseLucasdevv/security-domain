@@ -1,6 +1,8 @@
 package app.security.api;
 
 import app.security.domain.User;
+import app.security.infra.security.UserAuthenticated;
+import app.security.infra.security.UserDetails;
 import app.security.services.UserService;
 import app.security.types.UserDTO;
 import app.security.types.WorkoutDTO;
@@ -9,6 +11,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -19,7 +23,6 @@ import java.util.List;
 public class UserTeacherResource {
 
     private final UserService userService;
-
     //Teacher Resource
     @GetMapping("/teacher/users/{pageNumber}")
     public ResponseEntity<List<UserDTO>> getUsers(@PathVariable int pageNumber){
@@ -34,12 +37,16 @@ public class UserTeacherResource {
 
     @PostMapping("/teacher/workout/save/{userId}")
     public ResponseEntity<UserDTO> saveWorkout(@PathVariable Long userId,@RequestBody WorkoutDTO workout){
-        return ResponseEntity.status(201).body(this.userService.createWorkout(userId,workout));
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        String extractUsername = authentication.getName();
+        return ResponseEntity.status(201).body(this.userService.createWorkout(userId,workout,extractUsername));
     }
 
     @PutMapping("/teacher/workout/update/{userId}/{workoutId}")
     public ResponseEntity<UserDTO> updateWorkout(@PathVariable Long userId,@PathVariable Long workoutId,@RequestBody WorkoutDTO workout){
-        return ResponseEntity.status(201).body(this.userService.updateWorkout(workoutId,userId,workout));
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        String extractUsername = authentication.getName();
+        return ResponseEntity.status(201).body(this.userService.updateWorkout(workoutId,userId,workout,extractUsername));
     }
     @GetMapping("/teacher/workouts/{username}")
     public ResponseEntity<List<WorkoutDTO<String>>> getAllTrainingFromUser(@PathVariable String username){
