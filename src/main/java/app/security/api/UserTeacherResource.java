@@ -1,15 +1,10 @@
 package app.security.api;
 
-import app.security.domain.User;
-import app.security.infra.security.UserAuthenticated;
-import app.security.infra.security.UserDetails;
 import app.security.services.UserService;
 import app.security.types.UserDTO;
 import app.security.types.WorkoutDTO;
 import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Pageable;
+
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
