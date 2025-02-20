@@ -90,13 +90,13 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public UserDTO createWorkout(Long userId, WorkoutDTO<?> workout) {
+    public UserDTO createWorkout(Long userId, WorkoutDTO<?> workout,String nameOfTeacher) {
         User user = this.userRepository.getUserById(TypeRole.USER,userId);
         Workout workoutEntity = new Workout();
         workoutEntity.setName(workout.name());
         workoutEntity.setSeries(workout.series());
         workoutEntity.setMuscularGroup(workout.musculargroup());
-        workoutEntity.setNameOfTeacher(workout.nameOfTeacher());
+        workoutEntity.setNameOfTeacher(nameOfTeacher);
         workoutEntity.setDescription(workout.description());
         workoutEntity.setWeekday(workout.weekday());
         workoutEntity.setUser(user);
@@ -108,7 +108,7 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public UserDTO updateWorkout(Long workoutId,Long userId, WorkoutDTO<?> workout) {
+    public UserDTO updateWorkout(Long workoutId,Long userId, WorkoutDTO<?> workout,String nameOfTeacher) {
         User user = this.userRepository.getUserById(TypeRole.USER,userId);
         log.info("user here {}" ,user);
         List<Workout> listWorkout = user.getWorkout().stream().toList();
@@ -118,7 +118,7 @@ public class UserServiceImpl implements UserService {
         workoutAlreadyExist.setSeries(workout.series());
         workoutAlreadyExist.setDescription(workout.description());
         workoutAlreadyExist.setMuscularGroup(workout.musculargroup());
-        workoutAlreadyExist.setNameOfTeacher(workout.nameOfTeacher());
+        workoutAlreadyExist.setNameOfTeacher(nameOfTeacher);
         workoutAlreadyExist.setWeekday(workout.weekday());
         workoutAlreadyExist.setUpdatedAt(LocalDateTime.now());
         workoutRepository.save(workoutAlreadyExist);
