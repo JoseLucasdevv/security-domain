@@ -28,9 +28,10 @@ public class SecurityConfig{
                 .sessionManagement(httpSecuritySessionManagementConfigurer -> httpSecuritySessionManagementConfigurer
                         .sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .authorizeHttpRequests(auth -> auth.
+                        // auth Users
                         requestMatchers(HttpMethod.POST,"api/register").permitAll().
                         requestMatchers(HttpMethod.POST,"api/auth").permitAll()
-
+                        // TeacherConsumer
                         .requestMatchers(HttpMethod.GET,"api/teacher/users/**").hasRole("TEACHER")
                         .requestMatchers(HttpMethod.GET,"api/teacher/user/**").hasRole("TEACHER")
                         .requestMatchers(HttpMethod.POST,"api/teacher/workout/save/**").hasRole("TEACHER")
@@ -38,6 +39,9 @@ public class SecurityConfig{
                         .requestMatchers(HttpMethod.GET,"api/teacher/workouts/**").hasRole("TEACHER")
                         .requestMatchers(HttpMethod.GET,"api/teacher/workout/**").hasRole("TEACHER")
                         .requestMatchers(HttpMethod.DELETE,"api/teacher/workout/delete/**").hasRole("TEACHER")
+
+                        //User Consumer
+                        .requestMatchers(HttpMethod.GET,"api/user/resource/workouts").hasRole("USER")
 
                 ).addFilterBefore(filterValidateJWT, UsernamePasswordAuthenticationFilter.class);
     
