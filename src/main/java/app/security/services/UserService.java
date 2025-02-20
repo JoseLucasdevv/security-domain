@@ -18,8 +18,8 @@ public interface UserService {
     List<WorkoutDTO<String>> getAllWorkoutFromUser(String username);
     WorkoutDTO<String> getSpecificWorkoutFromUser(String username , Long workoutId);
     Void deleteWorkoutById(Long userId, Long workoutId);
-    UserDTO createWorkout(Long userId, WorkoutDTO<?> workout);
-    UserDTO updateWorkout(Long workoutId, Long userId,WorkoutDTO<?> workout);
+    UserDTO createWorkout(Long userId, WorkoutDTO<?> workout,String nameOfTeacher);
+    UserDTO updateWorkout(Long workoutId, Long userId,WorkoutDTO<?> workout,String nameOfTeacher);
 
 
 }
