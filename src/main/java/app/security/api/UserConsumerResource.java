@@ -16,14 +16,14 @@ import java.util.List;
 @RequestMapping("/api")
 @RequiredArgsConstructor
 public class UserConsumerResource {
-    private final UserService userSerivce;
+    private final UserService userService;
 
     @GetMapping("/user/resource/workouts")
     public ResponseEntity<List<WorkoutDTO<String>>> getMyWorkout(){
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
         String username = auth.getName();
 
-        return ResponseEntity.ok(userSerivce.getAllWorkoutFromUser(username));
+        return ResponseEntity.ok(userService.getAllWorkoutFromUser(username));
 
     }
 
