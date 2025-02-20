@@ -20,8 +20,6 @@ public class FilterValidateJWT extends OncePerRequestFilter {
     UserDetails userDetails;
     @Autowired
     JwtService jwtService;
-    @Autowired
-    UserRepository userRepository;
 
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException{
