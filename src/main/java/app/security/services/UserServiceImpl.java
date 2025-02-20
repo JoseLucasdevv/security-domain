@@ -92,11 +92,12 @@ public class UserServiceImpl implements UserService {
     @Override
     public UserDTO createWorkout(Long userId, WorkoutDTO<?> workout,String nameOfTeacher) {
         User user = this.userRepository.getUserById(TypeRole.USER,userId);
+        User userTeacher = this.userRepository.findByUsername(nameOfTeacher);
         Workout workoutEntity = new Workout();
         workoutEntity.setName(workout.name());
         workoutEntity.setSeries(workout.series());
-        workoutEntity.setMuscularGroup(workout.musculargroup());
-        workoutEntity.setNameOfTeacher(nameOfTeacher);
+        workoutEntity.setMuscularGroup(workout.muscularGroup());
+        workoutEntity.setNameOfTeacher(userTeacher.getName());
         workoutEntity.setDescription(workout.description());
         workoutEntity.setWeekday(workout.weekday());
         workoutEntity.setUser(user);
@@ -110,6 +111,7 @@ public class UserServiceImpl implements UserService {
     @Override
     public UserDTO updateWorkout(Long workoutId,Long userId, WorkoutDTO<?> workout,String nameOfTeacher) {
         User user = this.userRepository.getUserById(TypeRole.USER,userId);
+        User userTeacher = this.userRepository.findByUsername(nameOfTeacher);
         log.info("user here {}" ,user);
         List<Workout> listWorkout = user.getWorkout().stream().toList();
         Workout workoutAlreadyExist = listWorkout.stream().filter(w -> w.getId().equals(workoutId)).findFirst().orElse(null);
@@ -117,8 +119,8 @@ public class UserServiceImpl implements UserService {
         workoutAlreadyExist.setName(workout.name());
         workoutAlreadyExist.setSeries(workout.series());
         workoutAlreadyExist.setDescription(workout.description());
-        workoutAlreadyExist.setMuscularGroup(workout.musculargroup());
-        workoutAlreadyExist.setNameOfTeacher(nameOfTeacher);
+        workoutAlreadyExist.setMuscularGroup(workout.muscularGroup());
+        workoutAlreadyExist.setNameOfTeacher(userTeacher.getName());
         workoutAlreadyExist.setWeekday(workout.weekday());
         workoutAlreadyExist.setUpdatedAt(LocalDateTime.now());
         workoutRepository.save(workoutAlreadyExist);
