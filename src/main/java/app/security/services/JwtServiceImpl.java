@@ -21,7 +21,8 @@ public class JwtServiceImpl implements JwtService{
 
             return JWT.create()
                     .withIssuer("security-domain")
-                    .withSubject(user.getUsername()).withExpiresAt(genExpirationDate())
+                    .withSubject(user.getUsername())
+                    .withExpiresAt(genExpirationDate())
                     .sign(algorithm);
 
         } catch (Exception e) {
