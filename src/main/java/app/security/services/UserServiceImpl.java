@@ -2,6 +2,7 @@ package app.security.services;
 
 import app.security.Enum.TypeRole;
 import app.security.MapperDTO.UserMapper;
+import app.security.MapperDTO.WorkoutMapper;
 import app.security.domain.User;
 import app.security.domain.Workout;
 import app.security.repository.UserRepository;
@@ -58,10 +59,11 @@ public class UserServiceImpl implements UserService {
         log.info("get all workout from user");
 
         List<WorkoutDTO<String>> listWorkoutDTO = new ArrayList<>();
-         List<Workout> listWorkoutDomain = this.userRepository.getAllWorkoutFromUser(TypeRole.USER , username);
+         List<Workout> listWorkoutDomain = this.userRepository.getAllWorkoutFromUser(TypeRole.USER, username);
+
 
          listWorkoutDomain.stream().forEach(w ->{
-             WorkoutDTO<String> workoutDTO = new WorkoutDTO<String>(w.getId(),w.getName(),w.getSeries(),w.getWeekday(),w.getMuscularGroup(),w.getDescription(),w.getNameOfTeacher(),w.getUser().getUsername(),w.getCreatedAt(),w.getUpdatedAt());
+             WorkoutDTO<String> workoutDTO = (WorkoutDTO<String>) WorkoutMapper.workoutToDTO(w);
              listWorkoutDTO.add(workoutDTO);
          });
 
@@ -74,9 +76,8 @@ public class UserServiceImpl implements UserService {
         Workout workout =  listWorkout.stream().filter(w -> workoutId.equals(w.getId())).findFirst().orElse(null);
 
         assert workout != null;
-        return new WorkoutDTO<String>(workout.getId(),workout.getName(),workout.getSeries(),workout.getWeekday(),workout.getMuscularGroup(),workout.getDescription(),workout.getNameOfTeacher(),workout.getUser().getUsername(),workout.getCreatedAt(),workout.getUpdatedAt());
+        return (WorkoutDTO<String>) WorkoutMapper.workoutToDTO(workout);
         // return this.workoutRepository.findById(workoutId).orElseThrow(() ->  new EntityNotFoundException("Workout not found"));
-
     }
 
     @Override
@@ -90,18 +91,13 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public UserDTO createWorkout(Long userId, WorkoutDTO<?> workout,String nameOfTeacher) {
+    public UserDTO createWorkout(Long userId, WorkoutDTO<User> workout,String nameOfTeacher) {
         User user = this.userRepository.getUserById(TypeRole.USER,userId);
         User userTeacher = this.userRepository.findByUsername(nameOfTeacher);
-        Workout workoutEntity = new Workout();
-        workoutEntity.setName(workout.name());
-        workoutEntity.setSeries(workout.series());
-        workoutEntity.setMuscularGroup(workout.muscularGroup());
-        workoutEntity.setNameOfTeacher(userTeacher.getName());
-        workoutEntity.setDescription(workout.description());
-        workoutEntity.setWeekday(workout.weekday());
-        workoutEntity.setUser(user);
+        Workout workoutEntity = WorkoutMapper.DtoToWorkout(workout,userTeacher.getName(),user);
         user.getWorkout().add(workoutEntity);
+
+
         this.userRepository.save(user);
 
 
@@ -116,6 +112,7 @@ public class UserServiceImpl implements UserService {
         List<Workout> listWorkout = user.getWorkout().stream().toList();
         Workout workoutAlreadyExist = listWorkout.stream().filter(w -> w.getId().equals(workoutId)).findFirst().orElse(null);
         // logic to update workout and after save it in the good way my friend doesn't forget that please .
+
         workoutAlreadyExist.setName(workout.name());
         workoutAlreadyExist.setSeries(workout.series());
         workoutAlreadyExist.setDescription(workout.description());
