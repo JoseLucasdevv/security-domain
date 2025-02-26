@@ -1,10 +1,10 @@
 package app.security.services;
-
 import app.security.Enum.TypeRole;
 import app.security.MapperDTO.UserMapper;
 import app.security.MapperDTO.WorkoutMapper;
 import app.security.domain.User;
 import app.security.domain.Workout;
+import app.security.exceptions.Exception;
 import app.security.repository.UserRepository;
 import app.security.repository.WorkoutRepository;
 import app.security.types.UserDTO;
@@ -38,7 +38,14 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public UserDTO getUserById(Long id) {
+
         var user = this.userRepository.getUserById(TypeRole.USER,id);
+
+        if(user == null) throw new Exception("Cannot find this user");
+
+
+
+
         log.info("get user {}",user.getUsername());
         return UserMapper.UserToDTO(user);
 
@@ -46,6 +53,7 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public List<UserDTO> getUsers(int pageNumber) {
+        if(pageNumber < 1) pageNumber = 1;
         Pageable page = PageRequest.of(pageNumber -1 ,10);
         log.info("get all Users");
 
@@ -61,7 +69,7 @@ public class UserServiceImpl implements UserService {
         List<WorkoutDTO<String>> listWorkoutDTO = new ArrayList<>();
          List<Workout> listWorkoutDomain = this.userRepository.getAllWorkoutFromUser(TypeRole.USER, username);
 
-
+        
          listWorkoutDomain.stream().forEach(w ->{
              WorkoutDTO<String> workoutDTO = (WorkoutDTO<String>) WorkoutMapper.workoutToDTO(w);
              listWorkoutDTO.add(workoutDTO);
