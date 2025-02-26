@@ -1,15 +1,20 @@
 package app.security.api;
 
+
+import app.security.exceptions.Exception;
+import app.security.exceptions.HashError;
 import app.security.services.UserService;
 import app.security.types.UserDTO;
 import app.security.types.WorkoutDTO;
 import lombok.RequiredArgsConstructor;
+
 
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.HashMap;
 import java.util.List;
 
 @RestController
@@ -21,41 +26,78 @@ public class UserTeacherResource {
     //Teacher Resource
     @GetMapping("/teacher/users/{pageNumber}")
     public ResponseEntity<List<UserDTO>> getUsers(@PathVariable int pageNumber){
-
+        try{
         return ResponseEntity.ok().body(userService.getUsers(pageNumber));
+        }catch(Exception e){
+            return ResponseEntity.badRequest().build();
+        }
     }
 
     @GetMapping("/teacher/user/{id}")
-    public ResponseEntity<UserDTO> getUser(@PathVariable Long id){
+    public ResponseEntity<?> getUser(@PathVariable Long id){
+        try{
             return ResponseEntity.ok().body(userService.getUserById(id));
+        }catch(Exception e){
+            HashMap<String,String> objectHashError = HashError.createHashError(e.getMessage());
+        return ResponseEntity.badRequest().body(objectHashError);
+        }
+
     }
 
     @PostMapping("/teacher/workout/save/{userId}")
-    public ResponseEntity<UserDTO> saveWorkout(@PathVariable Long userId,@RequestBody WorkoutDTO workout){
+    public ResponseEntity<?> saveWorkout(@PathVariable Long userId,@RequestBody WorkoutDTO workout){
+        try{
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         String extractUsername = authentication.getName();
         return ResponseEntity.status(201).body(this.userService.createWorkout(userId,workout,extractUsername));
+        }catch(Exception e){
+            HashMap<String,String> objectHashError = HashError.createHashError(e.getMessage());
+            return ResponseEntity.badRequest().body(objectHashError);
+
+        }
     }
 
     @PutMapping("/teacher/workout/update/{userId}/{workoutId}")
-    public ResponseEntity<UserDTO> updateWorkout(@PathVariable Long userId,@PathVariable Long workoutId,@RequestBody WorkoutDTO workout){
+    public ResponseEntity<?> updateWorkout(@PathVariable Long userId,@PathVariable Long workoutId,@RequestBody WorkoutDTO workout){
+        try{
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         String extractUsername = authentication.getName();
         return ResponseEntity.status(201).body(this.userService.updateWorkout(workoutId,userId,workout,extractUsername));
+        }catch(Exception e){
+            HashMap<String,String> objectHashError = HashError.createHashError(e.getMessage());
+            return ResponseEntity.badRequest().body(objectHashError);
+
+        }
+
     }
     @GetMapping("/teacher/workouts/{username}")
     public ResponseEntity<List<WorkoutDTO<String>>> getAllTrainingFromUser(@PathVariable String username){
+        try{
         return ResponseEntity.ok(this.userService.getAllWorkoutFromUser(username));
+        }catch(Exception e){
+            return ResponseEntity.badRequest().build();
+        }
     }
 
     @GetMapping("/teacher/workout/{username}/{workoutId}")
-    public ResponseEntity<WorkoutDTO> getTrainingFromUser(@PathVariable String username,@PathVariable Long workoutId){
+    public ResponseEntity<?> getTrainingFromUser(@PathVariable String username,@PathVariable Long workoutId){
+        try{
         return ResponseEntity.ok(this.userService.getSpecificWorkoutFromUser(username, workoutId));
+        }catch(Exception e){
+            HashMap<String,String> objectHashError = HashError.createHashError(e.getMessage());
+            return ResponseEntity.badRequest().body(objectHashError);
+        }
+
     }
 
     @DeleteMapping("/teacher/workout/delete/{userId}/{workoutId}")
     public ResponseEntity deleteWorkout(@PathVariable Long userId,@PathVariable Long workoutId){
-        this.userService.deleteWorkoutById(userId,workoutId);
-        return ResponseEntity.ok().build();
+        try {
+            this.userService.deleteWorkoutById(userId, workoutId);
+            return ResponseEntity.ok().build();
+        }catch(Exception e){
+            HashMap<String,String> objectHashError = HashError.createHashError(e.getMessage());
+            return ResponseEntity.badRequest().body(objectHashError);
+        }
     }
 }
