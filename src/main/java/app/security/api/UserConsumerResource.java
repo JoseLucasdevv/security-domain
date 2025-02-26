@@ -20,11 +20,14 @@ public class UserConsumerResource {
 
     @GetMapping("/user/resource/workouts")
     public ResponseEntity<List<WorkoutDTO<String>>> getMyWorkout(){
+        try{
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
         String username = auth.getName();
 
         return ResponseEntity.ok(userService.getAllWorkoutFromUser(username));
-
+        } catch (Exception e) {
+            return ResponseEntity.badRequest().build();
+        }
     }
 
 
