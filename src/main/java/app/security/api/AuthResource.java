@@ -1,13 +1,12 @@
 package app.security.api;
-import app.security.repository.RoleRepository;
-import app.security.services.AuthService;
 
+import app.security.Enum.TypeRole;
+import app.security.services.AuthService;
 import app.security.types.AuthDTO;
 import app.security.types.RegisterDTO;
-import lombok.Data;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
-
+import app.security.exceptions.Exception;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -23,18 +22,22 @@ public class AuthResource {
 
     @PostMapping("/register")
     public ResponseEntity registerResource(@RequestBody RegisterDTO form){
-
-        authService.register(form);
-
+try{
+        authService.register(form, TypeRole.USER);
         return ResponseEntity.ok().build();
+}catch(Exception e){
+    return ResponseEntity.badRequest().body(e.getMessage());
+}
     }
+
+
 
     @PostMapping("/auth")
     public ResponseEntity authResource(@RequestBody AuthDTO form){
         try{
             var token = authService.auth(form);
             return ResponseEntity.ok(token);
-        }catch(Exception e ){
+        }catch(Exception e){
             return ResponseEntity.badRequest().body(e);
 
         }
