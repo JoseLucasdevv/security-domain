@@ -1,12 +1,14 @@
 package app.security.services;
 
 import app.security.Enum.TypeRole;
+import app.security.MapperDTO.UserMapper;
 import app.security.domain.Role;
 import app.security.domain.User;
 import app.security.infra.security.UserAuthenticated;
 import app.security.repository.RoleRepository;
 import app.security.types.AuthDTO;
 import app.security.types.RegisterDTO;
+import app.security.types.UserDTOIn;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import org.springframework.security.authentication.AuthenticationManager;
@@ -27,16 +29,16 @@ public class AuthServiceImpl implements AuthService {
     @Autowired
     private UserService userService;
     @Override
-    public void register(RegisterDTO form) {
+    public void register(RegisterDTO form,TypeRole role) {
         String encryptedPassword = new BCryptPasswordEncoder().encode(form.password());
-        User persistUser = new User();
-        persistUser.setName(form.name());
-        persistUser.setPassword(encryptedPassword);
-        persistUser.setUsername(form.username());
+        User persistUser = UserMapper.DtoToUser(new UserDTOIn(form.name(),form.username(),encryptedPassword));
         Role roleUser = new Role();
-        roleUser.setName(TypeRole.ADMIN);
+        roleUser.setName(role);
         roleUser.setUsers(List.of(persistUser));
+
         persistUser.setRole(roleUser);
+
+
         roleRepository.save(roleUser);
         userService.saveUser(persistUser);
     }
