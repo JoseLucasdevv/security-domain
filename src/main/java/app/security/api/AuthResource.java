@@ -21,7 +21,7 @@ public class AuthResource {
     AuthService authService;
 
     @PostMapping("/register")
-    public ResponseEntity registerResource(@RequestBody RegisterDTO form){
+    public ResponseEntity<String> registerResource(@RequestBody RegisterDTO form){
 try{
         authService.register(form, TypeRole.USER);
         return ResponseEntity.ok().build();
