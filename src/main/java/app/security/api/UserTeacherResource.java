@@ -38,7 +38,7 @@ public class UserTeacherResource {
         try{
             return ResponseEntity.ok().body(userService.getUserById(id));
         }catch(Exception e){
-            HashMap<String,String> objectHashError = HashError.createHashError(e.getMessage());
+            HashMap<String,String> objectHashError = HashError.createHashErrorOutput(e.getMessage());
         return ResponseEntity.badRequest().body(objectHashError);
         }
 
@@ -51,7 +51,7 @@ public class UserTeacherResource {
         String extractUsername = authentication.getName();
         return ResponseEntity.status(201).body(this.userService.createWorkout(userId,workout,extractUsername));
         }catch(Exception e){
-            HashMap<String,String> objectHashError = HashError.createHashError(e.getMessage());
+            HashMap<String,String> objectHashError = HashError.createHashErrorOutput(e.getMessage());
             return ResponseEntity.badRequest().body(objectHashError);
 
         }
@@ -64,7 +64,7 @@ public class UserTeacherResource {
         String extractUsername = authentication.getName();
         return ResponseEntity.status(201).body(this.userService.updateWorkout(workoutId,userId,workout,extractUsername));
         }catch(Exception e){
-            HashMap<String,String> objectHashError = HashError.createHashError(e.getMessage());
+            HashMap<String,String> objectHashError = HashError.createHashErrorOutput(e.getMessage());
             return ResponseEntity.badRequest().body(objectHashError);
 
         }
@@ -84,7 +84,7 @@ public class UserTeacherResource {
         try{
         return ResponseEntity.ok(this.userService.getSpecificWorkoutFromUser(username, workoutId));
         }catch(Exception e){
-            HashMap<String,String> objectHashError = HashError.createHashError(e.getMessage());
+            HashMap<String,String> objectHashError = HashError.createHashErrorOutput(e.getMessage());
             return ResponseEntity.badRequest().body(objectHashError);
         }
 
@@ -96,7 +96,7 @@ public class UserTeacherResource {
             this.userService.deleteWorkoutById(userId, workoutId);
             return ResponseEntity.ok().build();
         }catch(Exception e){
-            HashMap<String,String> objectHashError = HashError.createHashError(e.getMessage());
+            HashMap<String,String> objectHashError = HashError.createHashErrorOutput(e.getMessage());
             return ResponseEntity.badRequest().body(objectHashError);
         }
     }
