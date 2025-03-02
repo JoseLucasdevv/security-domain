@@ -1,6 +1,5 @@
 package app.security.MapperDTO;
 
-import app.security.Enum.MuscularGroup;
 import app.security.domain.User;
 import app.security.domain.Workout;
 import app.security.types.WorkoutDTO;
