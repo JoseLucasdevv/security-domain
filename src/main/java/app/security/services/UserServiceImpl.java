@@ -121,6 +121,8 @@ public class UserServiceImpl implements UserService {
         Workout workoutAlreadyExist = listWorkout.stream().filter(w -> w.getId().equals(workoutId)).findFirst().orElse(null);
         // logic to update workout and after save it in the good way my friend doesn't forget that please .
 
+        //remember to refactor this update.
+
         workoutAlreadyExist.setName(workout.name());
         workoutAlreadyExist.setSeries(workout.series());
         workoutAlreadyExist.setDescription(workout.description());
