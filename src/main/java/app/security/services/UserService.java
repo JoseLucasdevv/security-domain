@@ -3,7 +3,9 @@ package app.security.services;
 import app.security.domain.User;
 import app.security.domain.Workout;
 import app.security.types.UserDTO;
+import app.security.types.WorkoutCreateDTO;
 import app.security.types.WorkoutDTO;
+import app.security.types.WorkoutUpdateDTO;
 
 import java.util.List;
 import java.util.Optional;
@@ -18,8 +20,8 @@ public interface UserService {
     List<WorkoutDTO<String>> getAllWorkoutFromUser(String username);
     WorkoutDTO<String> getSpecificWorkoutFromUser(String username , Long workoutId);
     Void deleteWorkoutById(Long userId, Long workoutId);
-    UserDTO createWorkout(Long userId, WorkoutDTO<User> workout,String nameOfTeacher);
-    UserDTO updateWorkout(Long workoutId, Long userId,WorkoutDTO<?> workout,String nameOfTeacher);
+    UserDTO createWorkout(Long userId, WorkoutCreateDTO workout, String nameOfTeacher);
+    UserDTO updateWorkout(Long workoutId, Long userId, WorkoutUpdateDTO workout, String nameOfTeacher);
 
 
 }
