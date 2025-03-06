@@ -7,8 +7,11 @@ import app.security.domain.Workout;
 import app.security.exceptions.Exception;
 import app.security.repository.UserRepository;
 import app.security.repository.WorkoutRepository;
+import app.security.services.validations.WorkoutUpdateValidation;
 import app.security.types.UserDTO;
+import app.security.types.WorkoutCreateDTO;
 import app.security.types.WorkoutDTO;
+import app.security.types.WorkoutUpdateDTO;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -16,7 +19,6 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
-import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -99,10 +101,11 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public UserDTO createWorkout(Long userId, WorkoutDTO<User> workout,String nameOfTeacher) {
+    public UserDTO createWorkout(Long userId, WorkoutCreateDTO workout, String nameOfTeacher) {
+        WorkoutDTO<User> workoutDto = new WorkoutDTO<>(null,workout.name(),workout.series(),workout.weekday(),workout.muscularGroup(), workout.description(),null,null,null,null);
         User user = this.userRepository.getUserById(TypeRole.USER,userId);
         User userTeacher = this.userRepository.findByUsername(nameOfTeacher);
-        Workout workoutEntity = WorkoutMapper.DtoToWorkout(workout,userTeacher.getName(),user);
+        Workout workoutEntity = WorkoutMapper.DtoToWorkout(workoutDto,userTeacher.getName(),user);
         user.getWorkout().add(workoutEntity);
 
 
@@ -113,24 +116,23 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public UserDTO updateWorkout(Long workoutId,Long userId, WorkoutDTO<?> workout,String nameOfTeacher) {
+    public UserDTO updateWorkout(Long workoutId, Long userId, WorkoutUpdateDTO workout, String nameOfTeacher) {
+        log.info("workout User {}" , workout);
+
         User user = this.userRepository.getUserById(TypeRole.USER,userId);
+        if(user == null) throw new Exception("user not found");
         User userTeacher = this.userRepository.findByUsername(nameOfTeacher);
+        if(userTeacher == null) throw new Exception("userTeacher not found");
         log.info("user here {}" ,user);
         List<Workout> listWorkout = user.getWorkout().stream().toList();
         Workout workoutAlreadyExist = listWorkout.stream().filter(w -> w.getId().equals(workoutId)).findFirst().orElse(null);
         // logic to update workout and after save it in the good way my friend doesn't forget that please .
 
         //remember to refactor this update.
+        if(workoutAlreadyExist == null ) throw new Exception("Workout from user Not found");
 
-        workoutAlreadyExist.setName(workout.name());
-        workoutAlreadyExist.setSeries(workout.series());
-        workoutAlreadyExist.setDescription(workout.description());
-        workoutAlreadyExist.setMuscularGroup(workout.muscularGroup());
-        workoutAlreadyExist.setNameOfTeacher(userTeacher.getName());
-        workoutAlreadyExist.setWeekday(workout.weekday());
-        workoutAlreadyExist.setUpdatedAt(LocalDateTime.now());
-        workoutRepository.save(workoutAlreadyExist);
+
+        workoutRepository.save(WorkoutUpdateValidation.validationUpdate(workoutAlreadyExist,workout,userTeacher));
 
          return UserMapper.UserToDTO(this.userRepository.getUserById(TypeRole.USER,userId));
 
