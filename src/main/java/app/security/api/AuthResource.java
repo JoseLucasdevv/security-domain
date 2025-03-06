@@ -1,9 +1,11 @@
 package app.security.api;
 
 import app.security.Enum.TypeRole;
+import app.security.exceptions.HashError;
 import app.security.services.AuthService;
 import app.security.types.AuthDTO;
 import app.security.types.RegisterDTO;
+import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import app.security.exceptions.Exception;
@@ -12,6 +14,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.util.HashMap;
 
 
 @RestController
@@ -21,24 +24,27 @@ public class AuthResource {
     AuthService authService;
 
     @PostMapping("/register")
-    public ResponseEntity<String> registerResource(@RequestBody RegisterDTO form){
+    public ResponseEntity<HashMap<String,String>> registerResource(@RequestBody @Valid RegisterDTO form){
 try{
         authService.register(form, TypeRole.USER);
         return ResponseEntity.ok().build();
 }catch(Exception e){
-    return ResponseEntity.badRequest().body(e.getMessage());
+
+    HashMap<String,String> errors = HashError.createHashErrorOutput(e.getMessage());
+    return ResponseEntity.badRequest().body(errors);
 }
     }
 
 
 
     @PostMapping("/auth")
-    public ResponseEntity authResource(@RequestBody AuthDTO form){
+    public ResponseEntity<?> authResource(@RequestBody AuthDTO form){
         try{
             var token = authService.auth(form);
             return ResponseEntity.ok(token);
         }catch(Exception e){
-            return ResponseEntity.badRequest().body(e);
+            HashMap<String,String> errors = HashError.createHashErrorOutput(e.getMessage());
+            return ResponseEntity.badRequest().body(errors);
 
         }
 
