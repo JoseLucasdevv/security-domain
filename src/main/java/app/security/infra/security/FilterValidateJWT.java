@@ -1,6 +1,7 @@
 package app.security.infra.security;
 
-import app.security.repository.UserRepository;
+
+
 import app.security.services.JwtService;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
