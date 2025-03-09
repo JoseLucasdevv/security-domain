@@ -2,16 +2,16 @@ package app.security.services;
 
 import app.security.Enum.TypeRole;
 import app.security.MapperDTO.UserMapper;
+import app.security.domain.RefreshToken;
 import app.security.domain.Role;
 import app.security.domain.User;
 import app.security.exceptions.Exception;
 import app.security.infra.security.UserAuthenticated;
+import app.security.repository.RefreshTokenRepository;
 import app.security.repository.RoleRepository;
 import app.security.repository.UserRepository;
 import app.security.services.validations.CreateUserValidation;
-import app.security.types.AuthDTO;
-import app.security.types.RegisterDTO;
-import app.security.types.UserDTOIn;
+import app.security.types.*;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import org.springframework.security.authentication.AuthenticationManager;
@@ -20,6 +20,7 @@ import org.springframework.security.authentication.UsernamePasswordAuthenticatio
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import java.time.Instant;
 import java.util.List;
 
 @Service
@@ -29,6 +30,8 @@ public class AuthServiceImpl implements AuthService {
     @Autowired
     JwtService jwtService;
     @Autowired
+    RefreshTokenService refreshTokenService;
+    @Autowired
     private UserRepository userRepository;
     @Autowired
     private RoleRepository roleRepository;
@@ -36,6 +39,8 @@ public class AuthServiceImpl implements AuthService {
     private CreateUserValidation createUserValidation;
     @Autowired
     private UserService userService;
+    @Autowired
+    RefreshTokenRepository refreshTokenRepository;
     @Override
     public void register(RegisterDTO form,TypeRole role) {
 
@@ -55,14 +60,26 @@ public class AuthServiceImpl implements AuthService {
     }
 
     @Override
-    public String auth(AuthDTO form) throws BadCredentialsException {
+    public ResponseAuthentication auth(AuthDTO form) throws BadCredentialsException {
         var user = userRepository.findByUsername(form.username());
         if (user == null)throw new Exception("this user doesn't exists");
+        UserDTO userDto = UserMapper.UserToDTO(user);
+
         var usernamePassword = new UsernamePasswordAuthenticationToken(form.username(), form.password());
 
         var auth = authenticationManager.authenticate(usernamePassword);
+        String refreshTokenGenerated = refreshTokenService.generateRefreshToken();
+        Instant RefreshTokenExpiresAt = refreshTokenService.getExpiresAtRefreshToken();
 
-        return jwtService.generateToken((UserAuthenticated) auth.getPrincipal());
+        RefreshToken refreshToken = new RefreshToken();
+        refreshToken.setUser(user);
+        refreshToken.setExpiresAt(RefreshTokenExpiresAt);
+        refreshToken.setToken(refreshTokenGenerated);
+        refreshToken.setCreatedAt(Instant.now());
+        refreshTokenRepository.save(refreshToken);
+        String accessToken = jwtService.generateToken((UserAuthenticated) auth.getPrincipal());
+        Instant accessTokenExpiresAt = jwtService.extractExpiresAt(accessToken);
 
+        return new ResponseAuthentication(accessToken,accessTokenExpiresAt, refreshTokenGenerated,refreshToken.getId(),refreshToken.getExpiresAt(),userDto,"Bearer");
     }
 }
