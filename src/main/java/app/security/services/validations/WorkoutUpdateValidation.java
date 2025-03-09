@@ -14,7 +14,7 @@ public class WorkoutUpdateValidation {
 
     public static Workout validationUpdate(Workout workoutAlreadyExist, WorkoutUpdateDTO workout, User userTeacher){
         boolean validateUpdate = false;
-        if(workout.name() != null && !workout.name().isBlank() && workout.name().length() > 3 && workout.name().length() <= 51){
+        if(workout.name() != null && !workout.name().isBlank() && workout.name().length() >= 3 && workout.name().length() <= 51){
             workoutAlreadyExist.setName(workout.name().trim());
             validateUpdate = true;
         }
