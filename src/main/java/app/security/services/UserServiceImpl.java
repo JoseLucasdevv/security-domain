@@ -94,6 +94,7 @@ public class UserServiceImpl implements UserService {
     public Void deleteWorkoutById(Long userId, Long workoutId) {
 
         User user = this.userRepository.getUserById(TypeRole.USER,userId);
+        user.getWorkout().stream().filter(w -> w.getId().equals(workoutId)).findFirst().orElseThrow(()-> new Exception("this workout doesn't exist"));
         user.getWorkout().removeIf(w -> w.getId().equals(workoutId));
         this.userRepository.save(user);
 
