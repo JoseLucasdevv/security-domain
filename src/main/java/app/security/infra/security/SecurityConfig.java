@@ -1,14 +1,17 @@
 package app.security.infra.security;
 
 
+import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpMethod;
+
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
+import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -24,13 +27,15 @@ public class SecurityConfig{
 
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
-        http.csrf(csrf-> csrf.disable())
+        http.csrf(AbstractHttpConfigurer::disable)
                 .sessionManagement(httpSecuritySessionManagementConfigurer -> httpSecuritySessionManagementConfigurer
                         .sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .authorizeHttpRequests(auth -> auth.
                         // auth Users
                         requestMatchers(HttpMethod.POST,"api/register").permitAll().
-                        requestMatchers(HttpMethod.POST,"api/auth").permitAll()
+                        requestMatchers(HttpMethod.POST,"api/auth").permitAll().
+                        requestMatchers(HttpMethod.POST,"api/refresh_token").permitAll()
+
                         // TeacherConsumer
                         .requestMatchers(HttpMethod.GET,"api/teacher/users/**").hasRole("TEACHER")
                         .requestMatchers(HttpMethod.GET,"api/teacher/user/**").hasRole("TEACHER")
@@ -44,8 +49,14 @@ public class SecurityConfig{
                         .requestMatchers(HttpMethod.GET,"api/user/resource/workouts").hasRole("USER")
 
                 ).addFilterBefore(filterValidateJWT, UsernamePasswordAuthenticationFilter.class);
-    
 
+        http.exceptionHandling(exh -> exh.authenticationEntryPoint(
+                (request, response, ex) -> {
+
+        response.sendError(HttpServletResponse.SC_UNAUTHORIZED,"Fail authenticate something wrong with token");
+
+}
+));
         return http.build();
     }
 
