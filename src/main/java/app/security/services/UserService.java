@@ -1,14 +1,12 @@
 package app.security.services;
 
 import app.security.domain.User;
-import app.security.domain.Workout;
-import app.security.types.UserDTO;
-import app.security.types.WorkoutCreateDTO;
-import app.security.types.WorkoutDTO;
-import app.security.types.WorkoutUpdateDTO;
+import app.security.dto.UserDTO;
+import app.security.dto.WorkoutCreateDTO;
+import app.security.dto.WorkoutDTO;
+import app.security.dto.WorkoutUpdateDTO;
 
 import java.util.List;
-import java.util.Optional;
 
 public interface UserService {
     //userConsumer

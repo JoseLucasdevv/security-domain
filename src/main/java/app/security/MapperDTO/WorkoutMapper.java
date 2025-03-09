@@ -2,7 +2,7 @@ package app.security.MapperDTO;
 
 import app.security.domain.User;
 import app.security.domain.Workout;
-import app.security.types.WorkoutDTO;
+import app.security.dto.WorkoutDTO;
 
 
 public class WorkoutMapper {

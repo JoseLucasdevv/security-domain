@@ -1,8 +1,8 @@
 package app.security.MapperDTO;
 
 import app.security.domain.User;
-import app.security.types.UserDTO;
-import app.security.types.UserDTOIn;
+import app.security.dto.UserDTO;
+import app.security.dto.UserDTOIn;
 
 public class UserMapper {
 

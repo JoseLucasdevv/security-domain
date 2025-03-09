@@ -6,14 +6,13 @@ import app.security.exceptions.Exception;
 import app.security.infra.security.UserAuthenticated;
 import app.security.infra.security.UserDetails;
 import app.security.repository.RefreshTokenRepository;
-import app.security.types.RefreshTokenIn;
-import app.security.types.RefreshTokenOut;
+import app.security.dto.RefreshTokenIn;
+import app.security.dto.RefreshTokenOut;
 import app.security.utils.GenerateExpirationDate;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.time.Instant;
-import java.util.List;
 import java.util.UUID;
 @RequiredArgsConstructor
 @Service

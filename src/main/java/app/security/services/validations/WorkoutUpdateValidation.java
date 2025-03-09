@@ -6,7 +6,7 @@ import app.security.domain.User;
 import app.security.domain.Workout;
 
 import app.security.exceptions.Exception;
-import app.security.types.WorkoutUpdateDTO;
+import app.security.dto.WorkoutUpdateDTO;
 
 import java.time.LocalDateTime;
 

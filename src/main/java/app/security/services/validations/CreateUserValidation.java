@@ -3,7 +3,7 @@ package app.security.services.validations;
 
 import app.security.exceptions.Exception;
 import app.security.repository.UserRepository;
-import app.security.types.RegisterDTO;
+import app.security.dto.RegisterDTO;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 

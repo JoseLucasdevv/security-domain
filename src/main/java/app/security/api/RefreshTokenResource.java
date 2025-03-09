@@ -2,7 +2,7 @@ package app.security.api;
 
 import app.security.exceptions.HashError;
 import app.security.services.RefreshTokenService;
-import app.security.types.RefreshTokenIn;
+import app.security.dto.RefreshTokenIn;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;

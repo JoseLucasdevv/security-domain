@@ -1,7 +1,7 @@
 package app.security.services;
 
-import app.security.types.RefreshTokenIn;
-import app.security.types.RefreshTokenOut;
+import app.security.dto.RefreshTokenIn;
+import app.security.dto.RefreshTokenOut;
 
 import java.time.Instant;
 

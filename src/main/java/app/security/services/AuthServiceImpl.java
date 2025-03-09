@@ -11,7 +11,7 @@ import app.security.repository.RefreshTokenRepository;
 import app.security.repository.RoleRepository;
 import app.security.repository.UserRepository;
 import app.security.services.validations.CreateUserValidation;
-import app.security.types.*;
+import app.security.dto.*;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import org.springframework.security.authentication.AuthenticationManager;

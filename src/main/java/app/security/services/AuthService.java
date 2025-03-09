@@ -1,9 +1,9 @@
 package app.security.services;
 
 import app.security.Enum.TypeRole;
-import app.security.types.AuthDTO;
-import app.security.types.RegisterDTO;
-import app.security.types.ResponseAuthentication;
+import app.security.dto.AuthDTO;
+import app.security.dto.RegisterDTO;
+import app.security.dto.ResponseAuthentication;
 
 
 public interface AuthService {

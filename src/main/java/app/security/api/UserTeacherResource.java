@@ -4,10 +4,10 @@ package app.security.api;
 import app.security.exceptions.Exception;
 import app.security.exceptions.HashError;
 import app.security.services.UserService;
-import app.security.types.UserDTO;
-import app.security.types.WorkoutCreateDTO;
-import app.security.types.WorkoutDTO;
-import app.security.types.WorkoutUpdateDTO;
+import app.security.dto.UserDTO;
+import app.security.dto.WorkoutCreateDTO;
+import app.security.dto.WorkoutDTO;
+import app.security.dto.WorkoutUpdateDTO;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 

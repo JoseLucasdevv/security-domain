@@ -1,4 +1,4 @@
-package app.security.types;
+package app.security.dto;
 
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;

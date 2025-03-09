@@ -1,4 +1,4 @@
-package app.security.types;
+package app.security.dto;
 
 import app.security.domain.Workout;
 
