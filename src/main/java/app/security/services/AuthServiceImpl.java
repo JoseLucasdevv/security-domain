@@ -4,11 +4,13 @@ import app.security.Enum.TypeRole;
 import app.security.MapperDTO.UserMapper;
 import app.security.domain.RefreshToken;
 import app.security.domain.Role;
+import app.security.domain.TokenBlackList;
 import app.security.domain.User;
 import app.security.exceptions.Exception;
 import app.security.infra.security.UserAuthenticated;
 import app.security.repository.RefreshTokenRepository;
 import app.security.repository.RoleRepository;
+import app.security.repository.TokenBlackListRepository;
 import app.security.repository.UserRepository;
 import app.security.services.validations.CreateUserValidation;
 import app.security.dto.*;
@@ -26,9 +28,11 @@ import java.util.List;
 @Service
 public class AuthServiceImpl implements AuthService {
     @Autowired
+    private TokenBlackListRepository tokenBlackListRepository;
+    @Autowired
     private AuthenticationManager authenticationManager;
     @Autowired
-    JwtService jwtService;
+    private JwtService jwtService;
     @Autowired
     RefreshTokenService refreshTokenService;
     @Autowired
@@ -82,4 +86,22 @@ public class AuthServiceImpl implements AuthService {
 
         return new ResponseAuthentication(accessToken,accessTokenExpiresAt, refreshTokenGenerated,refreshToken.getId(),refreshToken.getExpiresAt(),userDto,"Bearer");
     }
+
+    @Override
+    public void logOut(LogOutIn logOut) {
+        String username = jwtService.validateToken(logOut.accessToken());
+        User user =  this.userRepository.findByUsername(username);
+        TokenBlackList tokenBlackList = new TokenBlackList();
+        tokenBlackList.setTokenBlackList(logOut.accessToken());
+        tokenBlackList.setUser(user);
+        user.getAccessTokenBlackList().add(tokenBlackList);
+        user.getRefreshTokens().stream().filter(r -> r.getToken().equals(logOut.refreshToken())).findFirst().orElseThrow(() -> new Exception("can't find this refreshToken"));
+        user.getRefreshTokens().removeIf(r->r.getToken().equals(logOut.refreshToken()));
+        user.getAccessTokenBlackList().removeIf((t)->  jwtService.extractExpiresAt(t.getTokenBlackList()).isBefore(Instant.now()));
+        this.tokenBlackListRepository.save(tokenBlackList);
+        this.userRepository.save(user);
+
+    }
+
+
 }
