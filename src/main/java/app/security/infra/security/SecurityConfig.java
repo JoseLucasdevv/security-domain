@@ -46,7 +46,9 @@ public class SecurityConfig{
                         .requestMatchers(HttpMethod.DELETE,"api/teacher/workout/delete/**").hasRole("TEACHER")
 
                         //User Consumer
-                        .requestMatchers(HttpMethod.GET,"api/user/resource/workouts").hasRole("USER")
+                        .requestMatchers(HttpMethod.GET,"api/user/resource/workouts").hasRole("USER").
+
+                        requestMatchers(HttpMethod.POST,"api/logOut").hasRole("USER")
 
                 ).addFilterBefore(filterValidateJWT, UsernamePasswordAuthenticationFilter.class);
 
