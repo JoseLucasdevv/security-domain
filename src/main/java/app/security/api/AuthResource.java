@@ -1,6 +1,7 @@
 package app.security.api;
 
 import app.security.Enum.TypeRole;
+import app.security.dto.LogOutIn;
 import app.security.exceptions.HashError;
 import app.security.services.AuthService;
 import app.security.dto.AuthDTO;
@@ -46,6 +47,19 @@ try{
             HashMap<String,String> errors = HashError.createHashErrorOutput(e.getMessage());
             return ResponseEntity.badRequest().body(errors);
 
+        }
+
+
+    }
+
+    @PostMapping("/logOut")
+    public ResponseEntity<?> logOutResource(@RequestBody @Valid LogOutIn tokens){
+        try{
+            authService.logOut(tokens);
+            return ResponseEntity.ok().build();
+        }catch(Exception e){
+            HashMap<String,String> errors = HashError.createHashErrorOutput(e.getMessage());
+            return ResponseEntity.badRequest().body(errors);
         }
 
 
