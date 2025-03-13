@@ -8,7 +8,7 @@ public class UserMapper {
 
 
     public static UserDTO UserToDTO(User user){
-        return new UserDTO(user.getId(),user.getName(), user.getUsername(),user.getRole().getName(),user.getWorkout().stream().toList());
+        return new UserDTO(user.getId(),user.getName(), user.getUsername(),user.getEmail(),user.getRole().getName(),user.getWorkout().stream().toList());
     }
 
 
@@ -16,7 +16,9 @@ public class UserMapper {
     User userEntity = new User();
     userEntity.setName(user.name());
     userEntity.setUsername(user.username());
+    userEntity.setEmail(user.email());
     userEntity.setPassword(user.password());
+
 
 
 
