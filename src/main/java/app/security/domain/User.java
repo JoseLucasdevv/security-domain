@@ -20,7 +20,7 @@ public class User {
     private String name;
     private String username;
     private String email;
-    private Boolean emailConfirmed;
+    private Boolean emailConfirmed = false;
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
     private Collection<TokenBlackList> accessTokenBlackList = new HashSet<>();
     private String password;
