@@ -2,18 +2,14 @@ package app.security.services;
 
 import app.security.Enum.TypeRole;
 import app.security.MapperDTO.UserMapper;
-import app.security.domain.RefreshToken;
-import app.security.domain.Role;
-import app.security.domain.TokenBlackList;
-import app.security.domain.User;
+import app.security.domain.*;
 import app.security.exceptions.Exception;
 import app.security.infra.security.UserAuthenticated;
-import app.security.repository.RefreshTokenRepository;
-import app.security.repository.RoleRepository;
-import app.security.repository.TokenBlackListRepository;
-import app.security.repository.UserRepository;
+import app.security.repository.*;
 import app.security.services.validations.CreateUserValidation;
 import app.security.dto.*;
+import app.security.utils.GenerateExpirationDate;
+import app.security.utils.GenerateKeyEncoded;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import org.springframework.security.authentication.AuthenticationManager;
@@ -27,6 +23,8 @@ import java.util.List;
 
 @Service
 public class AuthServiceImpl implements AuthService {
+    @Autowired
+    private EmailConfirmationTokenRepository emailConfirmationTokenRepository;
     @Autowired
     private TokenBlackListRepository tokenBlackListRepository;
     @Autowired
@@ -55,12 +53,16 @@ public class AuthServiceImpl implements AuthService {
         Role roleUser = new Role();
         roleUser.setName(role);
         roleUser.setUsers(List.of(persistUser));
-
         persistUser.setRole(roleUser);
-
-
+        EmailConfirmationToken emailConfirmationToken = new EmailConfirmationToken();
+        emailConfirmationToken.setUser(persistUser);
+        String tokenEmailConfirm = GenerateKeyEncoded.getKeyEncodedToken();
+        emailConfirmationToken.setToken(tokenEmailConfirm);
+        emailConfirmationToken.setExpiresAt(GenerateExpirationDate.genExpirationDate(2L));
         roleRepository.save(roleUser);
         userService.saveUser(persistUser);
+        emailConfirmationTokenRepository.save(emailConfirmationToken);
+
     }
 
     @Override
