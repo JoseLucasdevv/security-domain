@@ -15,7 +15,7 @@ import java.util.List;
 @Repository
 public interface UserRepository extends JpaRepository<User , Long> {
     User findByUsername(String username);
-
+    User findByEmail(String email);
     @Query("SELECT u FROM User u WHERE u.role.name = :role_name")
     Page<User> getAllByRoleNameUser(@Param("role_name") TypeRole roleName,Pageable page);
 
