@@ -51,7 +51,7 @@ public class AuthServiceImpl implements AuthService {
         createUserValidation.RegisterValidation(form);
 
         String encryptedPassword = new BCryptPasswordEncoder().encode(form.password());
-        User persistUser = UserMapper.DtoToUser(new UserDTOIn(form.name(),form.username(),encryptedPassword));
+        User persistUser = UserMapper.DtoToUser(new UserDTOIn(form.name(),form.username(), form.email(), encryptedPassword));
         Role roleUser = new Role();
         roleUser.setName(role);
         roleUser.setUsers(List.of(persistUser));
