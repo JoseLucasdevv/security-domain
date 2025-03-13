@@ -1,6 +1,7 @@
 package app.security.services.validations;
 
 
+import app.security.domain.User;
 import app.security.exceptions.Exception;
 import app.security.repository.UserRepository;
 import app.security.dto.RegisterDTO;
@@ -13,8 +14,10 @@ public class CreateUserValidation {
     private final UserRepository userRepository;
 
 public void RegisterValidation(RegisterDTO form){
-    var user = this.userRepository.findByUsername(form.username());
-    if(user != null) throw new Exception("User already exists");
+    User userByUsername = this.userRepository.findByUsername(form.username());
+    User userByEmail = this.userRepository.findByEmail(form.email());
+
+    if(userByUsername != null || userByEmail != null) throw new Exception("User already exists");
 
     if(!form.password().equals(form.confirmPassword())) throw new Exception("confirm password is incorrect");
 
