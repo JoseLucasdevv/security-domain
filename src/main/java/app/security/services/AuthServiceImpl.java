@@ -5,11 +5,13 @@ import app.security.MapperDTO.UserMapper;
 import app.security.domain.*;
 import app.security.exceptions.Exception;
 import app.security.infra.security.UserAuthenticated;
+import app.security.mailProvider.SendEmailService;
 import app.security.repository.*;
 import app.security.services.validations.CreateUserValidation;
 import app.security.dto.*;
 import app.security.utils.GenerateExpirationDate;
 import app.security.utils.GenerateKeyEncoded;
+import jakarta.mail.MessagingException;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import org.springframework.security.authentication.AuthenticationManager;
@@ -23,6 +25,8 @@ import java.util.List;
 
 @Service
 public class AuthServiceImpl implements AuthService {
+    @Autowired
+    private SendEmailService sendEmailService;
     @Autowired
     private EmailConfirmationTokenRepository emailConfirmationTokenRepository;
     @Autowired
@@ -62,7 +66,7 @@ public class AuthServiceImpl implements AuthService {
         roleRepository.save(roleUser);
         userService.saveUser(persistUser);
         emailConfirmationTokenRepository.save(emailConfirmationToken);
-
+        sendEmailService.sendConfirmationLink(tokenEmailConfirm);
     }
 
     @Override
