@@ -3,9 +3,10 @@ package app.security.domain;
 import jakarta.persistence.*;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import org.springframework.data.annotation.CreatedDate;
+
 
 import java.time.Instant;
+import java.time.LocalDateTime;
 
 @NoArgsConstructor
 @Data
@@ -21,10 +22,15 @@ public class EmailConfirmationToken {
     private User user;
 
     @Column(nullable = false, updatable = false)
-    @CreatedDate
-    private Instant createdAt;
+    private LocalDateTime createdAt;
 
     @Column(nullable = false)
     private Instant expiresAt;
 
+
+
+    @PrePersist
+    public void prePersist() {
+        this.createdAt = LocalDateTime.now();
+    }
 }
