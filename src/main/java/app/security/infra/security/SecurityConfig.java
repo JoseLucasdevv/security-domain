@@ -34,7 +34,8 @@ public class SecurityConfig{
                         // auth Users
                         requestMatchers(HttpMethod.POST,"api/register").permitAll().
                         requestMatchers(HttpMethod.POST,"api/auth").permitAll().
-                        requestMatchers(HttpMethod.POST,"api/refresh_token").permitAll()
+                        requestMatchers(HttpMethod.POST,"api/refresh_token").permitAll().
+                        requestMatchers(HttpMethod.GET,"api/confirm-email").permitAll()
 
                         // TeacherConsumer
                         .requestMatchers(HttpMethod.GET,"api/teacher/users/**").hasRole("TEACHER")
