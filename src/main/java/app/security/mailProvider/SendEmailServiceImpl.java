@@ -46,7 +46,7 @@ public class SendEmailServiceImpl implements SendEmailService {
     }
 
     private String generateConfirmationLink(String token){
-        return "<a href=http://localhost:8080/confirm-email?token="+token+">Confirm Email</a>";
+        return "<a href=http://localhost:8080/api/confirm-email?token="+token+">Confirm Email</a>";
     }
 }
 
