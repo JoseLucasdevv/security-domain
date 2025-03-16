@@ -55,4 +55,21 @@ public class UserAuthenticated implements UserDetails {
     public boolean isEnabled() {
         return UserDetails.super.isEnabled();
     }
+
+
+    public Boolean getEmailConfirm(){
+        return user.getEmailConfirmed();
+    }
+    public String getEmail(){
+        return user.getEmail();
+    }
+
+    public String getName(){
+        return user.getName();
+    }
+
+    public String getRole(){
+        return user.getRole().getName().toString();
+    }
+
 }
