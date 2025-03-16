@@ -8,8 +8,10 @@ import com.auth0.jwt.algorithms.Algorithm;
 import com.auth0.jwt.exceptions.JWTCreationException;
 import com.auth0.jwt.exceptions.JWTDecodeException;
 import com.auth0.jwt.exceptions.JWTVerificationException;
+import com.auth0.jwt.interfaces.Claim;
 import org.springframework.stereotype.Service;
 import java.time.*;
+import java.util.Map;
 
 
 @Service
@@ -21,8 +23,12 @@ public class JwtServiceImpl implements JwtService{
     public String generateToken(UserAuthenticated user){
         try{
             Algorithm algorithm = Algorithm.HMAC256(this.secretKey);
-
+                
             return JWT.create()
+                    .withClaim("Role",user.getRole())
+                    .withClaim("Email-Confirmed",user.getEmailConfirm())
+                    .withClaim("Email",user.getEmail())
+                    .withClaim("Name",user.getName())
                     .withIssuer("security-domain")
                     .withSubject(user.getUsername())
                     .withExpiresAt(GenerateExpirationDate.genExpirationDate(1L))
@@ -56,9 +62,23 @@ public class JwtServiceImpl implements JwtService{
         }catch(JWTVerificationException e){
             throw new JWTVerificationException("cannot verify token:" + e.getMessage());
         }
+        }
+
+    public Map<String, Claim> extractClaims(String token) {
+        try{
+            Algorithm algorithm = Algorithm.HMAC256(this.secretKey);
+            return JWT.require(algorithm)
+                    .withIssuer("security-domain")
+                    .build()
+                    .verify(token)
+                    .getClaims();
+
+
+        }catch(JWTVerificationException e){
+            throw new JWTVerificationException("cannot verify token:" + e.getMessage());
+        }
+
 
 
     }
-
-
 }
