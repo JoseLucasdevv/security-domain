@@ -28,7 +28,9 @@ public class AuthResource {
     public ResponseEntity<HashMap<String,String>> registerResource(@RequestBody @Valid RegisterDTO form){
 try{
         authService.register(form, TypeRole.USER);
-        return ResponseEntity.ok().build();
+        HashMap<String,String> success = new HashMap<>();
+        success.put("message","we almost there please confirm your Email: " +  form.email());
+        return ResponseEntity.ok().body(success);
 }catch(Exception e){
 
     HashMap<String,String> errors = HashError.createHashErrorOutput(e.getMessage());
