@@ -22,11 +22,13 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 @EnableWebSecurity
 public class SecurityConfig{
     @Autowired
+    AuthorizationManagerFactory authorizationManagerFactory;
+    @Autowired
     FilterValidateJWT filterValidateJWT;
-    private AuthenticationConfiguration authenticationConfiguration;
 
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
+
         http.csrf(AbstractHttpConfigurer::disable)
                 .sessionManagement(httpSecuritySessionManagementConfigurer -> httpSecuritySessionManagementConfigurer
                         .sessionCreationPolicy(SessionCreationPolicy.STATELESS))
@@ -36,27 +38,29 @@ public class SecurityConfig{
                         requestMatchers(HttpMethod.POST,"api/auth").permitAll().
                         requestMatchers(HttpMethod.POST,"api/refresh_token").permitAll().
                         requestMatchers(HttpMethod.GET,"api/confirm-email").permitAll()
-
+                        //Just authenticated.
+                        .requestMatchers(HttpMethod.GET,"api/resend-email").authenticated().
+                        requestMatchers(HttpMethod.POST,"api/logOut").authenticated()
                         // TeacherConsumer
-                        .requestMatchers(HttpMethod.GET,"api/teacher/users/**").hasRole("TEACHER")
-                        .requestMatchers(HttpMethod.GET,"api/teacher/user/**").hasRole("TEACHER")
-                        .requestMatchers(HttpMethod.POST,"api/teacher/workout/save/**").hasRole("TEACHER")
-                        .requestMatchers(HttpMethod.PUT,"api/teacher/workout/update/**").hasRole("TEACHER")
-                        .requestMatchers(HttpMethod.GET,"api/teacher/workouts/**").hasRole("TEACHER")
-                        .requestMatchers(HttpMethod.GET,"api/teacher/workout/**").hasRole("TEACHER")
-                        .requestMatchers(HttpMethod.DELETE,"api/teacher/workout/delete/**").hasRole("TEACHER")
+                        .requestMatchers(HttpMethod.GET,"api/teacher/users/**").access(authorizationManagerFactory.emailConfirmedAndRole("TEACHER"))
+                        .requestMatchers(HttpMethod.GET,"api/teacher/user/**").access(authorizationManagerFactory.emailConfirmedAndRole("TEACHER"))
+                        .requestMatchers(HttpMethod.POST,"api/teacher/workout/save/**").access(authorizationManagerFactory.emailConfirmedAndRole("TEACHER"))
+                        .requestMatchers(HttpMethod.PUT,"api/teacher/workout/update/**").access(authorizationManagerFactory.emailConfirmedAndRole("TEACHER"))
+                        .requestMatchers(HttpMethod.GET,"api/teacher/workouts/**").access(authorizationManagerFactory.emailConfirmedAndRole("TEACHER"))
+                        .requestMatchers(HttpMethod.GET,"api/teacher/workout/**").access(authorizationManagerFactory.emailConfirmedAndRole("TEACHER"))
+                        .requestMatchers(HttpMethod.DELETE,"api/teacher/workout/delete/**").access(authorizationManagerFactory.emailConfirmedAndRole("TEACHER"))
 
                         //User Consumer
-                        .requestMatchers(HttpMethod.GET,"api/user/resource/workouts").hasRole("USER").
+                        .requestMatchers(HttpMethod.GET,"api/user/resource/workouts").access(authorizationManagerFactory.emailConfirmedAndRole("USER"))
 
-                        requestMatchers(HttpMethod.POST,"api/logOut").hasRole("USER")
 
                 ).addFilterBefore(filterValidateJWT, UsernamePasswordAuthenticationFilter.class);
 
         http.exceptionHandling(exh -> exh.authenticationEntryPoint(
                 (request, response, ex) -> {
 
-        response.sendError(HttpServletResponse.SC_UNAUTHORIZED,"Fail authenticate something wrong with token");
+        response.sendError(HttpServletResponse.SC_UNAUTHORIZED,ex.getMessage());
+
 
 }
 ));
