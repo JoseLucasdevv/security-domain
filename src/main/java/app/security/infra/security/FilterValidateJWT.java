@@ -34,16 +34,21 @@ public class FilterValidateJWT extends OncePerRequestFilter {
         var token = getToken(auth);
     if(token != null){
         var userName = jwtService.validateToken(token);
+        var extractClaims = jwtService.extractClaims(token);
+        var emailConfirmed = extractClaims.get("Email-Confirmed").asBoolean();
+        request.setAttribute("Email-Confirmed",emailConfirmed);
+
         var userFromRepository = this.userRepository.findByUsername(userName);
         tokenBlackListRepository.findByTokenBlackList(token).ifPresent(t-> {
         if(userFromRepository.getAccessTokenBlackList().contains(t)){
             new ServletException("this token in blackList");
         };
-
     });
 
-    org.springframework.security.core.userdetails.UserDetails user = userDetails.loadUserByUsername(userName);
+    UserAuthenticated user = userDetails.loadUserByUsername(userName);
+
     var authentication = new UsernamePasswordAuthenticationToken(user, null, user.getAuthorities());
+    authentication.setDetails(extractClaims);
     SecurityContextHolder.getContext().setAuthentication(authentication);
 }
         filterChain.doFilter(request, response);
