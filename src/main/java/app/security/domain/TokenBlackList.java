@@ -17,6 +17,7 @@ public class TokenBlackList {
     @ManyToOne(optional = false)
     @JoinColumn(name = "user_id")
     private User user;
+    @Column(nullable = false, length = 1000)
     private String tokenBlackList;
     private LocalDateTime createdAt;
 
