@@ -22,7 +22,7 @@ public class EmailServiceImpl implements EmailService {
                 .orElseThrow(()->new Exception("the token is Invalid"));
         if(tokenEmailConfirmation.getExpiresAt().isBefore(Instant.now())) throw new Exception("the token was expired");
 
-        User user =tokenEmailConfirmation.getUser();
+        User user = tokenEmailConfirmation.getUser();
         user.setEmailConfirmed(true);
         this.userRepository.save(user);
 

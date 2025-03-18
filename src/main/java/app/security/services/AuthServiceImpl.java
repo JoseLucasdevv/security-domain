@@ -74,7 +74,6 @@ public class AuthServiceImpl implements AuthService {
         var user = userRepository.findByUsername(form.username());
 
         if (user == null) throw new Exception("this user doesn't exists");
-        if(!user.getEmailConfirmed()) throw new Exception("you need to check The email Link to confirm the access");
         UserDTO userDto = UserMapper.UserToDTO(user);
 
         var usernamePassword = new UsernamePasswordAuthenticationToken(form.username(), form.password());
