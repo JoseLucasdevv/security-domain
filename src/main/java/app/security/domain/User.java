@@ -32,6 +32,8 @@ public class User {
     private Collection<Workout> workout = new ArrayList<>();
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
     private Collection<RefreshToken> refreshTokens = new ArrayList<>();
+    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
+    private Collection<EmailConfirmationToken> emailConfirmationTokens = new ArrayList<>();
 
 
     @Override
