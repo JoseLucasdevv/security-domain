@@ -8,7 +8,7 @@ public class UserMapper {
 
 
     public static UserDTO UserToDTO(User user){
-        return new UserDTO(user.getId(),user.getName(), user.getUsername(),user.getEmail(),user.getRole().getName(),user.getWorkout().stream().toList());
+        return new UserDTO(user.getId(),user.getName(), user.getUsername(),user.getEmail(),user.getRole().getName(),user.getEmailConfirmed(),user.getWorkout().stream().toList());
     }
 
 
