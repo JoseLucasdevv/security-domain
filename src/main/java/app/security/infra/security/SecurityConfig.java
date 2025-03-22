@@ -37,7 +37,10 @@ public class SecurityConfig{
                         requestMatchers(HttpMethod.POST,"api/register").permitAll().
                         requestMatchers(HttpMethod.POST,"api/auth").permitAll().
                         requestMatchers(HttpMethod.POST,"api/refresh_token").permitAll().
-                        requestMatchers(HttpMethod.GET,"api/confirm-email").permitAll()
+                        requestMatchers(HttpMethod.GET,"api/confirm-email").permitAll().
+                        requestMatchers(HttpMethod.POST,"api/forgot-password").permitAll()
+                        .requestMatchers(HttpMethod.POST,"api/reset-password").permitAll()
+
                         //Just authenticated.
                         .requestMatchers(HttpMethod.GET,"api/resend-email").authenticated().
                         requestMatchers(HttpMethod.POST,"api/logOut").authenticated()
