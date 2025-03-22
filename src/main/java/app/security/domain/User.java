@@ -34,7 +34,8 @@ public class User {
     private Collection<RefreshToken> refreshTokens = new ArrayList<>();
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
     private Collection<EmailConfirmationToken> emailConfirmationTokens = new ArrayList<>();
-
+    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
+    private Collection<ForgotPasswordToken> forgotPasswordTokens = new ArrayList<>();
 
     @Override
     public String toString() {
