@@ -59,10 +59,12 @@ public class SecurityConfig{
 
                 ).addFilterBefore(filterValidateJWT, UsernamePasswordAuthenticationFilter.class);
 
-        http.exceptionHandling(exh -> exh.authenticationEntryPoint(
+        http.exceptionHandling( exh -> exh.authenticationEntryPoint(
                 (request, response, ex) -> {
 
-        response.sendError(HttpServletResponse.SC_UNAUTHORIZED,ex.getMessage());
+        response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
+        response.getWriter().write("couldn't authenticate: " + ex.getMessage());
+
 
 
 }
