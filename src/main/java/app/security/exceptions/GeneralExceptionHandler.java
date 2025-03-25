@@ -4,6 +4,7 @@ package app.security.exceptions;
 import java.util.HashMap;
 import java.util.Map;
 
+import com.auth0.jwt.exceptions.JWTVerificationException;
 import jakarta.validation.ConstraintViolationException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -43,19 +44,21 @@ public class GeneralExceptionHandler {
     @ExceptionHandler(BadCredentialsException.class)
     public ResponseEntity<Map<String, handleErrorResponse>> handleValidationExceptions(BadCredentialsException ex) {
         Map<String, handleErrorResponse> errors = new HashMap<>();
-
         errors.put("error",new handleErrorResponse("username or password",ex.getMessage()));
         return new ResponseEntity<>(errors, HttpStatus.BAD_REQUEST);
     }
 
-    @ExceptionHandler(AuthenticationException.class)
-    public ResponseEntity<String> handleExpiredToken(AuthenticationException ex) {
+    @ExceptionHandler(JWTVerificationException.class)
+    public ResponseEntity<String> handleExpiredToken(JWTVerificationException ex) {
         return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(ex.getMessage());
     }
 
 
     @ExceptionHandler(Exception.class)
     private ResponseEntity<Object> handleBadRequest(Exception exception) {
-        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(exception.getMessage());
+        Map<String,String> exceptionHandleErrorResponse = new HashMap<>();
+        exceptionHandleErrorResponse.put("errorMessage",exception.getMessage());
+
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(exceptionHandleErrorResponse);
     }
 }

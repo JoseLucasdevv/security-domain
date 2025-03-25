@@ -38,12 +38,12 @@ public class UserTeacherResource {
 
     @GetMapping("/teacher/user/{id}")
     public ResponseEntity<?> getUser(@PathVariable Long id){
-        try{
-            return ResponseEntity.ok().body(userService.getUserById(id));
-        }catch(Exception e){
-            HashMap<String,String> objectHashError = HashError.createHashErrorOutput(e.getMessage());
-        return ResponseEntity.badRequest().body(objectHashError);
-        }
+       try{
+           return ResponseEntity.ok().body(userService.getUserById(id));
+       }catch(Exception e){
+                HashMap<String,String> objectHashError = HashError.createHashErrorOutput(e.getMessage());
+           return ResponseEntity.badRequest().body(objectHashError);
+       }
 
     }
 

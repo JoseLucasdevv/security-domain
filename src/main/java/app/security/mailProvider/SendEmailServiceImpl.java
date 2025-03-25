@@ -65,7 +65,7 @@ public class SendEmailServiceImpl implements SendEmailService {
                             "<p>Você solicitou a recuperação de sua senha. Use o formulário abaixo para definir uma nova senha:</p>" +
                             "<form action=\"" + createActionForm(token) + "\" method=\"post\">" +
                             "<label for=\"newPassword\">Nova senha:</label><br>" +
-                            "<input name=\"newPassword\" pattern=\"(?=.*\\d)(?=.*[a-z])(?=.*[A-Z])(?=.*\\W).{8,}\" title=\"one number and one uppercase and lowercase letter, and at least 8 or more characters\" type=\"password\" required/><br><br>" +
+                            "<input name=\"newPassword\" title=\"one number and one uppercase and lowercase letter, and at least 8 or more characters\" type=\"password\" required/><br><br>" +
                             "<button class=\"submitBtn\" type=\"submit\">Reset Password</button>" +
                             "</form>" +
                             "<p>Se você não solicitou esta alteração, ignore este e-mail.</p>" +
