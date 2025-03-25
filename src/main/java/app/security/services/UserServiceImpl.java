@@ -42,13 +42,9 @@ public class UserServiceImpl implements UserService {
     public UserDTO getUserById(Long id) {
 
         var user = this.userRepository.getUserById(TypeRole.USER,id);
-
         if(user == null) throw new Exception("Cannot find this user");
-
-
-
-
         log.info("get user {}",user.getUsername());
+
         return UserMapper.UserToDTO(user);
 
     }
