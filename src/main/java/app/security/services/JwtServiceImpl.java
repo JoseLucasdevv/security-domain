@@ -31,7 +31,7 @@ public class JwtServiceImpl implements JwtService{
                     .withClaim("Name",user.getName())
                     .withIssuer("security-domain")
                     .withSubject(user.getUsername())
-                    .withExpiresAt(GenerateExpirationDate.genExpirationDate(1L))
+                    .withExpiresAt(GenerateExpirationDate.genExpirationDate(30L))
                     .sign(algorithm);
 
         } catch (JWTCreationException e) {
