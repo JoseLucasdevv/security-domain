@@ -74,7 +74,7 @@ public class AuthServiceImpl implements AuthService {
         var user = userRepository.findByUsername(form.username());
 
         if (user == null) throw new Exception("this user doesn't exists");
-        UserDTO userDto = UserMapper.UserToDTO(user);
+            UserDTO userDto = UserMapper.UserToDTO(user);
 
         var usernamePassword = new UsernamePasswordAuthenticationToken(form.username(), form.password());
 
@@ -90,7 +90,8 @@ public class AuthServiceImpl implements AuthService {
         refreshTokenRepository.save(refreshToken);
         String accessToken = jwtService.generateToken((UserAuthenticated) auth.getPrincipal());
         Instant accessTokenExpiresAt = jwtService.extractExpiresAt(accessToken);
-
+        user.getRefreshTokens().removeIf((r)->  r.getExpiresAt().isBefore(Instant.now()));
+        userRepository.save(user);
         return new ResponseAuthentication(accessToken,accessTokenExpiresAt, refreshTokenGenerated,refreshToken.getId(),refreshToken.getExpiresAt(),userDto,"Bearer");
     }
 
