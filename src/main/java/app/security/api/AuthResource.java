@@ -27,7 +27,7 @@ public class AuthResource {
     @PostMapping("/register")
     public ResponseEntity<HashMap<String,String>> registerResource(@RequestBody @Valid RegisterDTO form){
 try{
-        authService.register(form, TypeRole.TEACHER);
+        authService.register(form, TypeRole.USER);
         HashMap<String,String> success = new HashMap<>();
         success.put("message","we almost there please confirm your Email: " +  form.email());
         return ResponseEntity.ok().body(success);
