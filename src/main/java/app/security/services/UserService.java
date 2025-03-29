@@ -13,13 +13,10 @@ public interface UserService {
     void saveUser(User user);
 
 //    userTeacher
+    UserDTO getUserConsumerById(Long id);
     UserDTO getUserById(Long id);
-    List<UserDTO> getUsers(int pageNumber);
-    List<WorkoutDTO<String>> getAllWorkoutFromUser(String username);
-    WorkoutDTO<String> getSpecificWorkoutFromUser(String username , Long workoutId);
-    Void deleteWorkoutById(Long userId, Long workoutId);
-    UserDTO createWorkout(Long userId, WorkoutCreateDTO workout, String nameOfTeacher);
-    UserDTO updateWorkout(Long workoutId, Long userId, WorkoutUpdateDTO workout, String nameOfTeacher);
-
-
+    List<UserDTO> getUsersConsumers(int pageNumber);
+    List<UserDTO> getAllUsers(int pageNumber);
+    UserDTO getUserByUsername(String username);
+    UserDTO getUserByEmail(String email);
 }
