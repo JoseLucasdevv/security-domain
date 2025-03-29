@@ -1,7 +1,8 @@
 package app.security.api;
 
-import app.security.services.UserService;
+
 import app.security.dto.WorkoutDTO;
+import app.security.services.WorkoutService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
@@ -16,7 +17,8 @@ import java.util.List;
 @RequestMapping("/api")
 @RequiredArgsConstructor
 public class UserConsumerResource {
-    private final UserService userService;
+    private final WorkoutService workoutService;
+
 
     @GetMapping("/user/resource/workouts")
     public ResponseEntity<List<WorkoutDTO<String>>> getMyWorkout(){
@@ -24,7 +26,7 @@ public class UserConsumerResource {
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
         String username = auth.getName();
 
-        return ResponseEntity.ok(userService.getAllWorkoutFromUser(username));
+        return ResponseEntity.ok(workoutService.getAllWorkoutFromUser(username));
         } catch (Exception e) {
             return ResponseEntity.badRequest().build();
         }
