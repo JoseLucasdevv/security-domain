@@ -1,34 +1,24 @@
 package app.security.services;
 import app.security.Enum.TypeRole;
 import app.security.MapperDTO.UserMapper;
-import app.security.MapperDTO.WorkoutMapper;
 import app.security.domain.User;
-import app.security.domain.Workout;
 import app.security.exceptions.Exception;
 import app.security.repository.UserRepository;
-import app.security.repository.WorkoutRepository;
-import app.security.services.validations.WorkoutUpdateValidation;
 import app.security.dto.UserDTO;
-import app.security.dto.WorkoutCreateDTO;
-import app.security.dto.WorkoutDTO;
-import app.security.dto.WorkoutUpdateDTO;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
-
-import java.util.ArrayList;
 import java.util.List;
-import java.util.stream.Collectors;
 
+@Transactional
 @Service
 @RequiredArgsConstructor
-@Transactional
 @Slf4j
 public class UserServiceImpl implements UserService {
-    private final WorkoutRepository workoutRepository;
+
     private final UserRepository userRepository;
 
 
@@ -39,7 +29,7 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public UserDTO getUserById(Long id) {
+    public UserDTO getUserConsumerById(Long id) {
 
         var user = this.userRepository.getUserById(TypeRole.USER,id);
         if(user == null) throw new Exception("Cannot find this user");
@@ -50,89 +40,52 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public List<UserDTO> getUsers(int pageNumber) {
-        if(pageNumber < 1) pageNumber = 1;
-        Pageable page = PageRequest.of(pageNumber -1 ,10);
-        log.info("get all Users");
+    public UserDTO getUserById(Long id) {
+        var user = this.userRepository.findById(id).orElseThrow(()-> new Exception("Can't find this user"));
+        log.info("get user {}",user.getUsername());
+        return UserMapper.UserToDTO(user);
 
-        List<User> users = this.userRepository.getAllByRoleNameUser(TypeRole.USER,page).stream().collect(Collectors.toList());
+    }
+
+
+    @Override
+    public List<UserDTO> getUsersConsumers(int pageNumber) {
+        if(pageNumber < 1) pageNumber = 1;
+        Pageable page = PageRequest.of(pageNumber - 1 ,10);
+        log.info("get all UsersConsumers");
+
+        List<User> users = this.userRepository.getAllByRoleNameUser(TypeRole.USER,page).stream().toList();
 
         return users.stream().map(UserMapper::UserToDTO).toList();
     }
 
     @Override
-    public List<WorkoutDTO<String>> getAllWorkoutFromUser(String username) {
-        log.info("get all workout from user");
+    public List<UserDTO> getAllUsers(int pageNumber) {
+        if(pageNumber < 1) pageNumber = 1;
+        Pageable page = PageRequest.of(pageNumber - 1 ,10);
+        log.info("get all Users");
 
-        List<WorkoutDTO<String>> listWorkoutDTO = new ArrayList<>();
-         List<Workout> listWorkoutDomain = this.userRepository.getAllWorkoutFromUser(TypeRole.USER, username);
+        List<User> users = this.userRepository.getAllUsers(page).stream().toList();
 
-        
-         listWorkoutDomain.stream().forEach(w ->{
-             WorkoutDTO<String> workoutDTO = (WorkoutDTO<String>) WorkoutMapper.workoutToDTO(w);
-             listWorkoutDTO.add(workoutDTO);
-         });
-
-        return listWorkoutDTO;
+        return users.stream().map(UserMapper::UserToDTO).toList();
     }
 
     @Override
-    public WorkoutDTO<String> getSpecificWorkoutFromUser(String username, Long workoutId) {
-        List<Workout> listWorkout = this.userRepository.getAllWorkoutFromUser(TypeRole.USER,username);
-        Workout workout =  listWorkout.stream().filter(w -> workoutId.equals(w.getId())).findFirst().orElse(null);
+    public UserDTO getUserByUsername(String username) {
+        User usr = this.userRepository.findByUsername(username);
+        if(usr == null) throw new Exception("can't find this user");
 
-        assert workout != null;
-        return (WorkoutDTO<String>) WorkoutMapper.workoutToDTO(workout);
-        // return this.workoutRepository.findById(workoutId).orElseThrow(() ->  new EntityNotFoundException("Workout not found"));
+        return UserMapper.UserToDTO(usr);
+
     }
 
     @Override
-    public Void deleteWorkoutById(Long userId, Long workoutId) {
-
-        User user = this.userRepository.getUserById(TypeRole.USER,userId);
-        user.getWorkout().stream().filter(w -> w.getId().equals(workoutId)).findFirst().orElseThrow(()-> new Exception("this workout doesn't exist"));
-        user.getWorkout().removeIf(w -> w.getId().equals(workoutId));
-        this.userRepository.save(user);
-
-        return null;
-    }
-
-    @Override
-    public UserDTO createWorkout(Long userId, WorkoutCreateDTO workout, String nameOfTeacher) {
-        WorkoutDTO<User> workoutDto = new WorkoutDTO<>(null,workout.name(),workout.series(),workout.weekday(),workout.muscularGroup(), workout.description(),null,null,null,null);
-        User user = this.userRepository.getUserById(TypeRole.USER,userId);
-        User userTeacher = this.userRepository.findByUsername(nameOfTeacher);
-        Workout workoutEntity = WorkoutMapper.DtoToWorkout(workoutDto,userTeacher.getName(),user);
-        user.getWorkout().add(workoutEntity);
-
-
-        this.userRepository.save(user);
-
-
-        return UserMapper.UserToDTO(this.userRepository.getUserById(TypeRole.USER,userId));
-    }
-
-    @Override
-    public UserDTO updateWorkout(Long workoutId, Long userId, WorkoutUpdateDTO workout, String nameOfTeacher) {
-        log.info("workout User {}" , workout);
-
-        User user = this.userRepository.getUserById(TypeRole.USER,userId);
-        if(user == null) throw new Exception("user not found");
-        User userTeacher = this.userRepository.findByUsername(nameOfTeacher);
-        if(userTeacher == null) throw new Exception("userTeacher not found");
-        log.info("user here {}" ,user);
-        List<Workout> listWorkout = user.getWorkout().stream().toList();
-        Workout workoutAlreadyExist = listWorkout.stream().filter(w -> w.getId().equals(workoutId)).findFirst().orElse(null);
-        // logic to update workout and after save it in the good way my friend doesn't forget that please .
-
-        //remember to refactor this update.
-        if(workoutAlreadyExist == null ) throw new Exception("Workout from user Not found");
-
-
-        workoutRepository.save(WorkoutUpdateValidation.validationUpdate(workoutAlreadyExist,workout,userTeacher));
-
-         return UserMapper.UserToDTO(this.userRepository.getUserById(TypeRole.USER,userId));
-
+    public UserDTO getUserByEmail(String email) {
+        User usr = this.userRepository.findByEmail(email);
+        if(usr == null) throw new Exception("can't find this user");
+        return UserMapper.UserToDTO(usr);
 
     }
+
+
 }
