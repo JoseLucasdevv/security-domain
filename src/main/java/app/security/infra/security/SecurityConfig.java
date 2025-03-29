@@ -56,6 +56,11 @@ public class SecurityConfig{
                         //User Consumer
                         .requestMatchers(HttpMethod.GET,"api/user/resource/workouts").access(authorizationManagerFactory.emailConfirmedAndRole("USER"))
 
+                        //User Admin
+                        .requestMatchers(HttpMethod.POST,"api/admin/register-teacher").access(authorizationManagerFactory.emailConfirmedAndRole("ADMIN"))
+                        .requestMatchers(HttpMethod.GET,"api/admin/users/**").access(authorizationManagerFactory.emailConfirmedAndRole("ADMIN"))
+                        .requestMatchers(HttpMethod.GET,"api/admin/user/**").access(authorizationManagerFactory.emailConfirmedAndRole("ADMIN"))
+
 
                 ).addFilterBefore(filterValidateJWT, UsernamePasswordAuthenticationFilter.class);
 
