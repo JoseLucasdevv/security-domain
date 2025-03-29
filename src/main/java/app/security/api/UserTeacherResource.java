@@ -8,6 +8,7 @@ import app.security.dto.UserDTO;
 import app.security.dto.WorkoutCreateDTO;
 import app.security.dto.WorkoutDTO;
 import app.security.dto.WorkoutUpdateDTO;
+import app.security.services.WorkoutService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 
@@ -24,13 +25,13 @@ import java.util.List;
 @RequestMapping("/api")
 @RequiredArgsConstructor
 public class UserTeacherResource {
-
+    private final WorkoutService workoutService;
     private final UserService userService;
     //Teacher Resource
     @GetMapping("/teacher/users/{pageNumber}")
     public ResponseEntity<List<UserDTO>> getUsers(@PathVariable int pageNumber){
         try{
-        return ResponseEntity.ok().body(userService.getUsers(pageNumber));
+        return ResponseEntity.ok().body(userService.getUsersConsumers(pageNumber));
         }catch(Exception e){
             return ResponseEntity.badRequest().build();
         }
@@ -39,7 +40,7 @@ public class UserTeacherResource {
     @GetMapping("/teacher/user/{id}")
     public ResponseEntity<?> getUser(@PathVariable Long id){
        try{
-           return ResponseEntity.ok().body(userService.getUserById(id));
+           return ResponseEntity.ok().body(userService.getUserConsumerById(id));
        }catch(Exception e){
                 HashMap<String,String> objectHashError = HashError.createHashErrorOutput(e.getMessage());
            return ResponseEntity.badRequest().body(objectHashError);
@@ -52,7 +53,7 @@ public class UserTeacherResource {
         try{
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         String extractUsername = authentication.getName();
-        return ResponseEntity.status(201).body(this.userService.createWorkout(userId,workout,extractUsername));
+        return ResponseEntity.status(201).body(this.workoutService.createWorkout(userId,workout,extractUsername));
         }catch(Exception e){
             HashMap<String,String> objectHashError = HashError.createHashErrorOutput(e.getMessage());
             return ResponseEntity.badRequest().body(objectHashError);
@@ -65,7 +66,7 @@ public class UserTeacherResource {
         try{
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         String extractUsername = authentication.getName();
-        return ResponseEntity.status(201).body(this.userService.updateWorkout(workoutId,userId,workout,extractUsername));
+        return ResponseEntity.status(201).body(this.workoutService.updateWorkout(workoutId,userId,workout,extractUsername));
         }catch(Exception e){
             HashMap<String,String> errors = HashError.createHashErrorOutput(e.getMessage());
             return ResponseEntity.badRequest().body(errors);
@@ -76,7 +77,7 @@ public class UserTeacherResource {
     @GetMapping("/teacher/workouts/{username}")
     public ResponseEntity<List<WorkoutDTO<String>>> getAllTrainingFromUser(@PathVariable String username){
         try{
-        return ResponseEntity.ok(this.userService.getAllWorkoutFromUser(username));
+        return ResponseEntity.ok(this.workoutService.getAllWorkoutFromUser(username));
         }catch(Exception e){
             return ResponseEntity.badRequest().build();
         }
@@ -85,7 +86,7 @@ public class UserTeacherResource {
     @GetMapping("/teacher/workout/{username}/{workoutId}")
     public ResponseEntity<?> getTrainingFromUser(@PathVariable String username,@PathVariable Long workoutId){
         try{
-        return ResponseEntity.ok(this.userService.getSpecificWorkoutFromUser(username, workoutId));
+        return ResponseEntity.ok(this.workoutService.getSpecificWorkoutFromUser(username, workoutId));
         }catch(Exception e){
             HashMap<String,String> objectHashError = HashError.createHashErrorOutput(e.getMessage());
             return ResponseEntity.badRequest().body(objectHashError);
@@ -96,7 +97,7 @@ public class UserTeacherResource {
     @DeleteMapping("/teacher/workout/delete/{userId}/{workoutId}")
     public ResponseEntity<?> deleteWorkout(@PathVariable Long userId,@PathVariable Long workoutId){
         try {
-            this.userService.deleteWorkoutById(userId, workoutId);
+            this.workoutService.deleteWorkoutById(userId, workoutId);
             return ResponseEntity.ok().build();
         }catch(Exception e){
             HashMap<String,String> objectHashError = HashError.createHashErrorOutput(e.getMessage());
