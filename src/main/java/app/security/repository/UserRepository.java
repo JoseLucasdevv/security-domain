@@ -24,5 +24,8 @@ public interface UserRepository extends JpaRepository<User , Long> {
 
     @Query("SELECT u.workout FROM User u WHERE u.role.name = :role_name AND u.username = :username")
     List<Workout> getAllWorkoutFromUser(@Param("role_name")TypeRole roleName,String username);
+    @Query("SELECT u FROM User u")
+    Page<User> getAllUsers(Pageable page);
+
 
 }
