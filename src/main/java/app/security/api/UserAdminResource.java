@@ -58,5 +58,10 @@ public class UserAdminResource {
         return ResponseEntity.ok(userService.getUserById(id));
     }
 
+    @DeleteMapping("/admin/user/delete/{id}")
+    public ResponseEntity<UserDTO> deleteUser(@PathVariable Long id){
+        return ResponseEntity.ok(userService.deleteUser(id));
+    }
+
 
 }
