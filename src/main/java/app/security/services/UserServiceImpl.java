@@ -87,5 +87,12 @@ public class UserServiceImpl implements UserService {
 
     }
 
+    @Override
+    public UserDTO deleteUser(Long id) {
+        User usr = this.userRepository.findById(id).orElseThrow(()-> new Exception("Can't find this user"));
+        this.userRepository.delete(usr);
+        return UserMapper.UserToDTO(usr);
+    }
+
 
 }
