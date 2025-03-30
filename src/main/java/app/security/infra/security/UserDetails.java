@@ -3,7 +3,6 @@ package app.security.infra.security;
 import app.security.domain.User;
 
 import app.security.repository.UserRepository;
-import app.security.services.UserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;

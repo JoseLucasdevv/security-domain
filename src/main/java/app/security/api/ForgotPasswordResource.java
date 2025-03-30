@@ -4,7 +4,6 @@ package app.security.api;
 import app.security.dto.EmailForgotPasswordIn;
 import app.security.dto.ResetPasswordIn;
 import app.security.exceptions.HashError;
-import app.security.mailProvider.SendEmailService;
 import app.security.services.ForgotPasswordService;
 import app.security.services.ResetPasswordService;
 import jakarta.validation.Valid;

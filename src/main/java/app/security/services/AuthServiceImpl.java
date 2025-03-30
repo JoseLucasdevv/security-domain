@@ -11,7 +11,6 @@ import app.security.services.validations.CreateUserValidation;
 import app.security.dto.*;
 import app.security.utils.GenerateExpirationDate;
 import app.security.utils.GenerateKeyEncoded;
-import jakarta.mail.MessagingException;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import org.springframework.security.authentication.AuthenticationManager;
