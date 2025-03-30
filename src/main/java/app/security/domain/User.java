@@ -24,7 +24,7 @@ public class User {
     private String password;
 
 
-    @ManyToOne(fetch = FetchType.EAGER)
+    @ManyToOne(fetch = FetchType.EAGER ,cascade = CascadeType.REMOVE)
     @JoinColumn(name = "role_id")
     private Role role;
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
