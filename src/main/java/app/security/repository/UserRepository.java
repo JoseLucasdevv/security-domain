@@ -14,6 +14,7 @@ import java.util.List;
 
 @Repository
 public interface UserRepository extends JpaRepository<User , Long> {
+
     User findByUsername(String username);
     User findByEmail(String email);
     @Query("SELECT u FROM User u WHERE u.role.name = :role_name")
@@ -26,6 +27,9 @@ public interface UserRepository extends JpaRepository<User , Long> {
     List<Workout> getAllWorkoutFromUser(@Param("role_name")TypeRole roleName,String username);
     @Query("SELECT u FROM User u")
     Page<User> getAllUsers(Pageable page);
+
+    @Query("SELECT u FROM User u WHERE u.role.name = :role_name")
+    Page<User> getAllUsersWithRole(@Param("role_name")TypeRole roleName, Pageable page);
 
 
 }
