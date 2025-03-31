@@ -2,6 +2,7 @@ package app.security.services;
 import app.security.Enum.TypeRole;
 import app.security.MapperDTO.UserMapper;
 import app.security.domain.User;
+import app.security.dto.UserUpdateDTO;
 import app.security.exceptions.Exception;
 import app.security.repository.UserRepository;
 import app.security.dto.UserDTO;
@@ -94,5 +95,18 @@ public class UserServiceImpl implements UserService {
         return UserMapper.UserToDTO(usr);
     }
 
+    @Override
+    public UserDTO updateUser(Long id, UserUpdateDTO userUpdateDTO) {
+        User user = this.userRepository.findById(id).orElseThrow(()-> new Exception("this user doesn't exists"));
+
+    return UserMapper.UserToDTO(user);
+    }
+
+    @Override
+    public List<UserDTO> getAllUsersWithRole(TypeRole role, int pageNumber) {
+        if(pageNumber < 1) pageNumber = 1;
+        Pageable page = PageRequest.of(pageNumber - 1 ,10);
+        return this.userRepository.getAllUsersWithRole(role,page).stream().map(UserMapper::UserToDTO).toList();
+    }
 
 }
