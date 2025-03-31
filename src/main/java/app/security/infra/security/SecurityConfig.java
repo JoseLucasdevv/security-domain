@@ -61,6 +61,7 @@ public class SecurityConfig{
                         .requestMatchers(HttpMethod.GET,"api/admin/users/**").access(authorizationManagerFactory.emailConfirmedAndRole("ADMIN"))
                         .requestMatchers(HttpMethod.GET,"api/admin/user/**").access(authorizationManagerFactory.emailConfirmedAndRole("ADMIN"))
                         .requestMatchers(HttpMethod.DELETE,"api/admin/user/delete/**").access(authorizationManagerFactory.emailConfirmedAndRole("ADMIN"))
+                        .requestMatchers(HttpMethod.PUT,"api/admin/user/update/**").access(authorizationManagerFactory.emailConfirmedAndRole("ADMIN"))
 
 
                 ).addFilterBefore(filterValidateJWT, UsernamePasswordAuthenticationFilter.class);
