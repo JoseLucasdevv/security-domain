@@ -3,6 +3,7 @@ package app.security.api;
 import app.security.Enum.TypeRole;
 import app.security.dto.RegisterDTO;
 import app.security.dto.UserDTO;
+import app.security.dto.UserUpdateDTO;
 import app.security.exceptions.Exception;
 import app.security.exceptions.HashError;
 import app.security.services.AuthService;
@@ -46,7 +47,6 @@ public class UserAdminResource {
         return ResponseEntity.ok(userService.getUserByEmail(email));
     }
 
-
     @GetMapping("/admin/user/username/{username}")
     public ResponseEntity<UserDTO> getUserByUsername(@PathVariable String username ){
         return ResponseEntity.ok(userService.getUserByUsername(username));
@@ -63,5 +63,14 @@ public class UserAdminResource {
         return ResponseEntity.ok(userService.deleteUser(id));
     }
 
+    @PutMapping("/admin/user/update/{id}")
+    public ResponseEntity<UserDTO> updateUser(@PathVariable Long id, UserUpdateDTO userUpdate){
+        return ResponseEntity.ok(userService.updateUser(id,userUpdate));
+    }
+
+    @GetMapping("/admin/users/{role}/{pageNumber}")
+    public ResponseEntity<List<UserDTO>> getAllUsersWithRole(@PathVariable TypeRole role ,@PathVariable int pageNumber){
+        return ResponseEntity.ok(userService.getAllUsersWithRole(role,pageNumber));
+    }
 
 }
