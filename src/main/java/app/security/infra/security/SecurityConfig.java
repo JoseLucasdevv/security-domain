@@ -2,6 +2,7 @@ package app.security.infra.security;
 
 
 import jakarta.servlet.http.HttpServletResponse;
+import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -17,14 +18,12 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
-
+@RequiredArgsConstructor
 @Configuration
 @EnableWebSecurity
 public class SecurityConfig{
-    @Autowired
-    AuthorizationManagerFactory authorizationManagerFactory;
-    @Autowired
-    FilterValidateJWT filterValidateJWT;
+    private final AuthorizationManagerFactory authorizationManagerFactory;
+    private final FilterValidateJWT filterValidateJWT;
 
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
@@ -47,11 +46,11 @@ public class SecurityConfig{
                         // TeacherConsumer
                         .requestMatchers(HttpMethod.GET,"api/teacher/users/**").access(authorizationManagerFactory.emailConfirmedAndRole("TEACHER"))
                         .requestMatchers(HttpMethod.GET,"api/teacher/user/**").access(authorizationManagerFactory.emailConfirmedAndRole("TEACHER"))
-                        .requestMatchers(HttpMethod.POST,"api/teacher/workout/save/**").access(authorizationManagerFactory.emailConfirmedAndRole("TEACHER"))
-                        .requestMatchers(HttpMethod.PUT,"api/teacher/workout/update/**").access(authorizationManagerFactory.emailConfirmedAndRole("TEACHER"))
+                        .requestMatchers(HttpMethod.POST,"api/teacher/workout/**").access(authorizationManagerFactory.emailConfirmedAndRole("TEACHER"))
+                        .requestMatchers(HttpMethod.PUT,"api/teacher/workout/**").access(authorizationManagerFactory.emailConfirmedAndRole("TEACHER"))
                         .requestMatchers(HttpMethod.GET,"api/teacher/workouts/**").access(authorizationManagerFactory.emailConfirmedAndRole("TEACHER"))
                         .requestMatchers(HttpMethod.GET,"api/teacher/workout/**").access(authorizationManagerFactory.emailConfirmedAndRole("TEACHER"))
-                        .requestMatchers(HttpMethod.DELETE,"api/teacher/workout/delete/**").access(authorizationManagerFactory.emailConfirmedAndRole("TEACHER"))
+                        .requestMatchers(HttpMethod.DELETE,"api/teacher/workout/**").access(authorizationManagerFactory.emailConfirmedAndRole("TEACHER"))
 
                         //User Consumer
                         .requestMatchers(HttpMethod.GET,"api/user/resource/workouts").access(authorizationManagerFactory.emailConfirmedAndRole("USER"))
@@ -60,8 +59,8 @@ public class SecurityConfig{
                         .requestMatchers(HttpMethod.POST,"api/admin/register-teacher").access(authorizationManagerFactory.emailConfirmedAndRole("ADMIN"))
                         .requestMatchers(HttpMethod.GET,"api/admin/users/**").access(authorizationManagerFactory.emailConfirmedAndRole("ADMIN"))
                         .requestMatchers(HttpMethod.GET,"api/admin/user/**").access(authorizationManagerFactory.emailConfirmedAndRole("ADMIN"))
-                        .requestMatchers(HttpMethod.DELETE,"api/admin/user/delete/**").access(authorizationManagerFactory.emailConfirmedAndRole("ADMIN"))
-                        .requestMatchers(HttpMethod.PUT,"api/admin/user/update/**").access(authorizationManagerFactory.emailConfirmedAndRole("ADMIN"))
+                        .requestMatchers(HttpMethod.DELETE,"api/admin/user/**").access(authorizationManagerFactory.emailConfirmedAndRole("ADMIN"))
+                        .requestMatchers(HttpMethod.PUT,"api/admin/user/**").access(authorizationManagerFactory.emailConfirmedAndRole("ADMIN"))
 
 
                 ).addFilterBefore(filterValidateJWT, UsernamePasswordAuthenticationFilter.class);
