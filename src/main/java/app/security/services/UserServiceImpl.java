@@ -100,6 +100,11 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
+    public void deleteUserByUsername(String username) {
+        this.userRepository.deleteUserByUsername(username);
+    }
+
+    @Override
     public ResponseUserUpdateValidationResource updateUser(Long id, UserUpdateDTO userUpdateDTO){
 
         User user = this.userRepository.findById(id).orElseThrow(()-> new Exception("this user doesn't exists", HttpStatus.NOT_FOUND));
