@@ -48,7 +48,7 @@ public class UserTeacherResource {
 
     }
 
-    @PostMapping("/teacher/workout/save/{userId}")
+    @PostMapping("/teacher/workout/{userId}")
     public ResponseEntity<?> saveWorkout(@PathVariable Long userId,@RequestBody @Valid WorkoutCreateDTO workout){
         try{
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
@@ -61,7 +61,7 @@ public class UserTeacherResource {
         }
     }
 
-    @PutMapping("/teacher/workout/update/{userId}/{workoutId}")
+    @PutMapping("/teacher/workout/{userId}/{workoutId}")
     public ResponseEntity<?> updateWorkout(@PathVariable Long userId,@PathVariable Long workoutId,@RequestBody WorkoutUpdateDTO workout){
         try{
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
@@ -94,7 +94,7 @@ public class UserTeacherResource {
 
     }
 
-    @DeleteMapping("/teacher/workout/delete/{userId}/{workoutId}")
+    @DeleteMapping("/teacher/workout/{userId}/{workoutId}")
     public ResponseEntity<?> deleteWorkout(@PathVariable Long userId,@PathVariable Long workoutId){
         try {
             this.workoutService.deleteWorkoutById(userId, workoutId);
