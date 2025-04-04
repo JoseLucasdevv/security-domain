@@ -8,6 +8,7 @@ import app.security.repository.ForgotPasswordTokenRepository;
 import jakarta.mail.MessagingException;
 import jakarta.mail.internet.MimeMessage;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.mail.javamail.MimeMessageHelper;
 import org.springframework.stereotype.Service;
@@ -23,7 +24,7 @@ public class SendEmailServiceImpl implements SendEmailService {
     public void sendConfirmationLink(String token) {
         try{
         EmailConfirmationToken emailConfirmationToken = this.emailConfirmationTokenRepository.
-                findEmailConfirmationTokenByToken(token).orElseThrow(() -> new Exception("Can't find this EmailConfirmationToken"));
+                findEmailConfirmationTokenByToken(token).orElseThrow(() -> new Exception("Can't find this EmailConfirmationToken",HttpStatus.NOT_FOUND));
 
 
         MimeMessage message = sender.createMimeMessage();
@@ -44,7 +45,7 @@ public class SendEmailServiceImpl implements SendEmailService {
 
         sender.send(message);
         } catch (MessagingException e) {
-            throw new Exception(e.getMessage());
+            throw new Exception(e.getMessage(),HttpStatus.BAD_REQUEST);
         }
     }
 
@@ -52,7 +53,8 @@ public class SendEmailServiceImpl implements SendEmailService {
     public void sendForgotPasswordLink(String token) {
 
         try{
-            ForgotPasswordToken forgotPasswordToken = this.forgotTokenRepository.findByToken(token).orElseThrow(() -> new Exception("Can't find this EmailConfirmationToken"));
+            // code review --> maybe it doesn't need visit the database.
+            ForgotPasswordToken forgotPasswordToken = this.forgotTokenRepository.findByToken(token).orElseThrow(() -> new Exception("Can't find this EmailConfirmationToken", HttpStatus.NOT_FOUND));
 
 
             MimeMessage message = sender.createMimeMessage();
@@ -79,9 +81,14 @@ public class SendEmailServiceImpl implements SendEmailService {
 
             sender.send(message);
         } catch (MessagingException e) {
-            throw new Exception(e.getMessage());
+            throw new Exception(e.getMessage(),HttpStatus.BAD_REQUEST);
         }
             }
+
+    @Override
+    public void SendCodeVerifyEmail(String code) {
+
+    }
 
     private String generateConfirmationLink(String token){
         return "<a href=http://localhost:8080/api/confirm-email?token="+token+">Confirm Email</a>";

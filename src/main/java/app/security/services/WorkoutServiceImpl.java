@@ -16,6 +16,7 @@ import app.security.services.validations.WorkoutUpdateValidation;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
@@ -59,7 +60,7 @@ public class WorkoutServiceImpl implements WorkoutService {
     public void deleteWorkoutById(Long userId, Long workoutId) {
 
         User user = this.userRepository.getUserById(TypeRole.USER,userId);
-        user.getWorkout().stream().filter(w -> w.getId().equals(workoutId)).findFirst().orElseThrow(()-> new app.security.exceptions.Exception("this workout doesn't exist"));
+        user.getWorkout().stream().filter(w -> w.getId().equals(workoutId)).findFirst().orElseThrow(()-> new app.security.exceptions.Exception("this workout doesn't exist",HttpStatus.NOT_FOUND));
         user.getWorkout().removeIf(w -> w.getId().equals(workoutId));
         this.userRepository.save(user);
 
@@ -85,16 +86,16 @@ public class WorkoutServiceImpl implements WorkoutService {
         log.info("workout User {}" , workout);
 
         User user = this.userRepository.getUserById(TypeRole.USER,userId);
-        if(user == null) throw new app.security.exceptions.Exception("user not found");
+        if(user == null) throw new app.security.exceptions.Exception("user not found",HttpStatus.NOT_FOUND);
         User userTeacher = this.userRepository.findByUsername(nameOfTeacher);
-        if(userTeacher == null) throw new app.security.exceptions.Exception("userTeacher not found");
+        if(userTeacher == null) throw new app.security.exceptions.Exception("userTeacher not found",HttpStatus.NOT_FOUND);
         log.info("user here {}" ,user);
         List<Workout> listWorkout = user.getWorkout().stream().toList();
         Workout workoutAlreadyExist = listWorkout.stream().filter(w -> w.getId().equals(workoutId)).findFirst().orElse(null);
         // logic to update workout and after save it in the good way my friend doesn't forget that please .
 
         //remember to refactor this update.
-        if(workoutAlreadyExist == null ) throw new Exception("Workout from user Not found");
+        if(workoutAlreadyExist == null ) throw new Exception("Workout from user Not found", HttpStatus.NOT_FOUND);
 
 
         workoutRepository.save(WorkoutUpdateValidation.validationUpdate(workoutAlreadyExist,workout,userTeacher));

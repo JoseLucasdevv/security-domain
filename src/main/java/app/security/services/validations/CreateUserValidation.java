@@ -6,6 +6,7 @@ import app.security.exceptions.Exception;
 import app.security.repository.UserRepository;
 import app.security.dto.RegisterDTO;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 
 @Service
@@ -17,11 +18,9 @@ public void RegisterValidation(RegisterDTO form){
     User userByUsername = this.userRepository.findByUsername(form.username());
     User userByEmail = this.userRepository.findByEmail(form.email());
 
-    if(userByUsername != null || userByEmail != null) throw new Exception("User already exists");
+    if(userByUsername != null || userByEmail != null) throw new Exception("User already exists", HttpStatus.FOUND);
 
-    if(!form.password().equals(form.confirmPassword())) throw new Exception("confirm password is incorrect");
-
-
+    if(!form.password().equals(form.confirmPassword())) throw new Exception("confirm password is incorrect",HttpStatus.CONFLICT);
 
 }
 

@@ -50,15 +50,14 @@ public class GeneralExceptionHandler {
 
     @ExceptionHandler(JWTVerificationException.class)
     public ResponseEntity<String> handleExpiredToken(JWTVerificationException ex) {
-        return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(ex.getMessage());
+        return new ResponseEntity<>(ex.getMessage(),HttpStatus.UNAUTHORIZED);
     }
 
 
     @ExceptionHandler(Exception.class)
-    private ResponseEntity<Object> handleBadRequest(Exception exception) {
-        Map<String,String> exceptionHandleErrorResponse = new HashMap<>();
-        exceptionHandleErrorResponse.put("errorMessage",exception.getMessage());
-
-        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(exceptionHandleErrorResponse);
+    private ResponseEntity<Object> handleException(Exception exception) {
+        Map<String,String> exceptionErrorResponse = new HashMap<>();
+        exceptionErrorResponse.put("Message",exception.getMessage());
+        return ResponseEntity.status(exception.status).body(exceptionErrorResponse);
     }
 }

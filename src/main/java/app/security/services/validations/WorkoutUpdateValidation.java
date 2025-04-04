@@ -7,6 +7,7 @@ import app.security.domain.Workout;
 
 import app.security.exceptions.Exception;
 import app.security.dto.WorkoutUpdateDTO;
+import org.springframework.http.HttpStatus;
 
 import java.time.LocalDateTime;
 
@@ -43,7 +44,7 @@ public class WorkoutUpdateValidation {
         if(validateUpdate){
         workoutAlreadyExist.setUpdatedAt(LocalDateTime.now());
         }else{
-            throw new Exception("nothing to update right here");
+            throw new Exception("nothing to update right here", HttpStatus.OK);
         }
 
         return workoutAlreadyExist;

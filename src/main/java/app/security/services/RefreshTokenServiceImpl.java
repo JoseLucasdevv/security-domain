@@ -10,6 +10,7 @@ import app.security.dto.RefreshTokenIn;
 import app.security.dto.RefreshTokenOut;
 import app.security.utils.GenerateExpirationDate;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 
 import java.time.Instant;
@@ -26,7 +27,7 @@ public class RefreshTokenServiceImpl implements RefreshTokenService {
         try{
             return UUID.randomUUID().toString();
         } catch (app.security.exceptions.Exception e) {
-            throw new Exception("can't generate a refresh Token");
+            throw new Exception("can't generate a refresh Token", HttpStatus.BAD_REQUEST);
         }
 
     }
@@ -37,10 +38,10 @@ public class RefreshTokenServiceImpl implements RefreshTokenService {
 
     @Override
     public RefreshTokenOut verify(RefreshTokenIn refreshTokenIn) {
-        RefreshToken refreshTokenAlreadyExists = refreshTokenRepository.findByToken(refreshTokenIn.refreshToken()).orElseThrow(()-> new Exception("refreshToken doesn't exists"));
+        RefreshToken refreshTokenAlreadyExists = refreshTokenRepository.findByToken(refreshTokenIn.refreshToken()).orElseThrow(()-> new Exception("refreshToken doesn't exists",HttpStatus.NOT_FOUND));
 
         Instant refreshTokenExpiresAt = refreshTokenAlreadyExists.getExpiresAt();
-        if(refreshTokenExpiresAt.isBefore(Instant.now())) throw new Exception("RefreshToken expired");
+        if(refreshTokenExpiresAt.isBefore(Instant.now())) throw new Exception("RefreshToken expired",HttpStatus.NOT_ACCEPTABLE);
         User user = refreshTokenAlreadyExists.getUser();
 
         org.springframework.security.core.userdetails.UserDetails userAuth = userDetails.loadUserByUsername(user.getUsername());

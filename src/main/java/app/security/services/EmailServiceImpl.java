@@ -5,6 +5,7 @@ import app.security.exceptions.Exception;
 import app.security.repository.EmailConfirmationTokenRepository;
 import app.security.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 
 import java.time.Instant;
@@ -19,8 +20,8 @@ public class EmailServiceImpl implements EmailService {
     public void verifyTokenEmailConfirmation(String token) {
         var tokenEmailConfirmation = emailConfirmationTokenRepository
                 .findEmailConfirmationTokenByToken(token)
-                .orElseThrow(()->new Exception("the token is Invalid"));
-        if(tokenEmailConfirmation.getExpiresAt().isBefore(Instant.now())) throw new Exception("the token was expired");
+                .orElseThrow(()->new Exception("the token is Invalid",HttpStatus.FORBIDDEN));
+        if(tokenEmailConfirmation.getExpiresAt().isBefore(Instant.now())) throw new Exception("the token was expired", HttpStatus.FORBIDDEN);
 
         User user = tokenEmailConfirmation.getUser();
         user.setEmailConfirmed(true);

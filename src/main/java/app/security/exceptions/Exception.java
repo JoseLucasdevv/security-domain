@@ -1,9 +1,12 @@
 package app.security.exceptions;
 
-public class Exception extends RuntimeException {
+import org.springframework.http.HttpStatus;
 
-    public Exception(String message){
+public class Exception extends RuntimeException {
+public HttpStatus status;
+    public Exception(String message,HttpStatus status){
         super(message);
+        this.status = status;
     }
 
 }

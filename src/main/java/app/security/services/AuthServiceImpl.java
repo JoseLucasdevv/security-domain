@@ -13,6 +13,7 @@ import app.security.utils.GenerateExpirationDate;
 import app.security.utils.GenerateKeyEncoded;
 import org.springframework.beans.factory.annotation.Autowired;
 
+import org.springframework.http.HttpStatus;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -72,7 +73,7 @@ public class AuthServiceImpl implements AuthService {
     public ResponseAuthentication auth(AuthDTO form) throws BadCredentialsException {
         var user = userRepository.findByUsername(form.username());
 
-        if (user == null) throw new Exception("this user doesn't exists");
+        if (user == null) throw new Exception("this user doesn't exists", HttpStatus.NOT_FOUND);
             UserDTO userDto = UserMapper.UserToDTO(user);
 
         var usernamePassword = new UsernamePasswordAuthenticationToken(form.username(), form.password());
@@ -102,7 +103,7 @@ public class AuthServiceImpl implements AuthService {
         tokenBlackList.setTokenBlackList(logOut.accessToken());
         tokenBlackList.setUser(user);
         user.getAccessTokenBlackList().add(tokenBlackList);
-        user.getRefreshTokens().stream().filter(r -> r.getToken().equals(logOut.refreshToken())).findFirst().orElseThrow(() -> new Exception("can't find this refreshToken"));
+        user.getRefreshTokens().stream().filter(r -> r.getToken().equals(logOut.refreshToken())).findFirst().orElseThrow(() -> new Exception("can't find this refreshToken",HttpStatus.NOT_FOUND));
         user.getRefreshTokens().removeIf(r->r.getToken().equals(logOut.refreshToken()));
         user.getAccessTokenBlackList().removeIf((t)->  jwtService.extractExpiresAt(t.getTokenBlackList()).isBefore(Instant.now()));
         this.tokenBlackListRepository.save(tokenBlackList);

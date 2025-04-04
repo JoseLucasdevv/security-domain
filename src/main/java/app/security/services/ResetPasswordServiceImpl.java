@@ -6,6 +6,7 @@ import app.security.exceptions.Exception;
 import app.security.repository.ForgotPasswordTokenRepository;
 import app.security.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -20,12 +21,12 @@ private final ForgotPasswordTokenRepository forgotPasswordTokenRepository;
     @Override
     public void resetPassword(String token,String newPassword) {
             ForgotPasswordToken forgotPasswordToken = forgotPasswordTokenRepository.findByToken(token)
-                    .orElseThrow(()-> new Exception("can't find this token"));
+                    .orElseThrow(()-> new Exception("can't find this token", HttpStatus.NOT_FOUND));
 
             Instant expiresAt = forgotPasswordToken.getExpiresAt();
             if(expiresAt.isBefore(Instant.now())){
                 forgotPasswordTokenRepository.delete(forgotPasswordToken);
-                throw new Exception("the token was Expired");
+                throw new Exception("the token was Expired",HttpStatus.NOT_ACCEPTABLE);
             };
             User usr = forgotPasswordToken.getUser();
             String encryptedPassword = new BCryptPasswordEncoder().encode(newPassword);
