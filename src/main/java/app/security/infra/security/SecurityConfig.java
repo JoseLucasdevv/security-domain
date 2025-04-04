@@ -43,6 +43,7 @@ public class SecurityConfig{
                         //Just authenticated.
                         .requestMatchers(HttpMethod.GET,"api/resend-email").authenticated().
                         requestMatchers(HttpMethod.POST,"api/logOut").authenticated()
+                        .requestMatchers(HttpMethod.DELETE,"api/user").authenticated()
                         // TeacherConsumer
                         .requestMatchers(HttpMethod.GET,"api/teacher/users/**").access(authorizationManagerFactory.emailConfirmedAndRole("TEACHER"))
                         .requestMatchers(HttpMethod.GET,"api/teacher/user/**").access(authorizationManagerFactory.emailConfirmedAndRole("TEACHER"))
@@ -53,7 +54,8 @@ public class SecurityConfig{
                         .requestMatchers(HttpMethod.DELETE,"api/teacher/workout/**").access(authorizationManagerFactory.emailConfirmedAndRole("TEACHER"))
 
                         //User Consumer
-                        .requestMatchers(HttpMethod.GET,"api/user/resource/workouts").access(authorizationManagerFactory.emailConfirmedAndRole("USER"))
+                        .requestMatchers(HttpMethod.GET,"api/user").access(authorizationManagerFactory.emailConfirmedAndRole("USER"))
+
 
                         //User Admin
                         .requestMatchers(HttpMethod.POST,"api/admin/register-teacher").access(authorizationManagerFactory.emailConfirmedAndRole("ADMIN"))
