@@ -5,6 +5,8 @@ import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashSet;
@@ -22,7 +24,7 @@ public class User {
     private String email;
     private Boolean emailConfirmed = false;
     private String password;
-
+    private LocalDateTime updatedAt;
 
     @ManyToOne(fetch = FetchType.EAGER ,cascade = CascadeType.REMOVE)
     @JoinColumn(name = "role_id")
@@ -37,6 +39,9 @@ public class User {
     private Collection<EmailConfirmationToken> emailConfirmationTokens = new ArrayList<>();
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
     private Collection<ForgotPasswordToken> forgotPasswordTokens = new ArrayList<>();
+    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
+    private Collection<CodeVerifyEmail> codeVerifyEmail = new ArrayList<>();
+
 
     @Override
     public String toString() {
