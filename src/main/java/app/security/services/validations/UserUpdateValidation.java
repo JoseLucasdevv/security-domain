@@ -86,9 +86,9 @@ private boolean validateUpdate = false;
 
     private void validatePassword(User userAlreadyExist, UserUpdateDTO userUpdateValidation){
         if(userUpdateValidation.password() != null && !userUpdateValidation.password().isBlank()){
-        String patternValidatePassword = "^(?=.*[A-Z])(?=.*[!@#$%^&*(),.?\":{}|<>])[A-Za-z\\d!@#$%^&*(),.?\":{}|<>]{8,}$";
-        Pattern pattern = Pattern.compile(patternValidatePassword);
-        Matcher matcher = pattern.matcher(userUpdateValidation.password());
+            String patternValidatePassword = "^(?=.*[A-Z])(?=.*[!@#$%^&*(),.?\":{}|<>])[A-Za-z\\d!@#$%^&*(),.?\":{}|<>]{8,}$";
+            Pattern pattern = Pattern.compile(patternValidatePassword);
+            Matcher matcher = pattern.matcher(userUpdateValidation.password());
 
         if(!matcher.matches()){
             resultValidation.put("fieldPassword","check the minimum requirements to update the fieldPassword");
