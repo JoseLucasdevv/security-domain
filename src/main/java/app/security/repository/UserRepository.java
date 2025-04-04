@@ -6,6 +6,7 @@ import app.security.domain.Workout;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
@@ -25,11 +26,12 @@ public interface UserRepository extends JpaRepository<User , Long> {
 
     @Query("SELECT u.workout FROM User u WHERE u.role.name = :role_name AND u.username = :username")
     List<Workout> getAllWorkoutFromUser(@Param("role_name")TypeRole roleName,String username);
+
     @Query("SELECT u FROM User u")
     Page<User> getAllUsers(Pageable page);
 
     @Query("SELECT u FROM User u WHERE u.role.name = :role_name")
     Page<User> getAllUsersWithRole(@Param("role_name")TypeRole roleName, Pageable page);
 
-
+    void deleteUserByUsername(String username);
 }
