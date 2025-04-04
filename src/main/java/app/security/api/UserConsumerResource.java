@@ -18,12 +18,10 @@ import java.util.List;
 @RequiredArgsConstructor
 public class UserConsumerResource {
     private final WorkoutService workoutService;
-
-
     @GetMapping("/user/resource/workouts")
     public ResponseEntity<List<WorkoutDTO<String>>> getMyWorkout(){
         try{
-        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+            Authentication auth = SecurityContextHolder.getContext().getAuthentication();
         String username = auth.getName();
 
         return ResponseEntity.ok(workoutService.getAllWorkoutFromUser(username));
