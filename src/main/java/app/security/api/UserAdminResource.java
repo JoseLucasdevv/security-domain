@@ -8,6 +8,7 @@ import app.security.exceptions.Exception;
 import app.security.exceptions.HashError;
 import app.security.services.AuthService;
 import app.security.services.UserService;
+import app.security.services.UserServiceImpl;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -42,29 +43,32 @@ public class UserAdminResource {
         return ResponseEntity.ok(userService.getAllUsers(pageNumber));
     }
 
-    @GetMapping("/admin/user/email/{email}")
-    public ResponseEntity<UserDTO> getUserByEmail(@PathVariable String email){
-        return ResponseEntity.ok(userService.getUserByEmail(email));
+    @GetMapping("/admin/user")
+    public ResponseEntity<UserDTO> getUserByParam(@RequestParam(required = false) String email,@RequestParam(required = false) String username){
+
+        //pattern restfull Api
+        UserDTO user;
+        if(email != null) user = userService.getUserByEmail(email);
+        else if(username != null) user = userService.getUserByUsername(username);
+        else return ResponseEntity.badRequest().build();
+
+        return user != null  ? ResponseEntity.ok(user) : ResponseEntity.notFound().build();
+
     }
 
-    @GetMapping("/admin/user/username/{username}")
-    public ResponseEntity<UserDTO> getUserByUsername(@PathVariable String username ){
-        return ResponseEntity.ok(userService.getUserByUsername(username));
-    }
-
-
-    @GetMapping("/admin/user/id/{id}")
+    @GetMapping("/admin/user/{id}")
     public ResponseEntity<UserDTO> getUserById(@PathVariable Long id){
         return ResponseEntity.ok(userService.getUserById(id));
     }
 
-    @DeleteMapping("/admin/user/delete/{id}")
+    @DeleteMapping("/admin/user/{id}")
     public ResponseEntity<UserDTO> deleteUser(@PathVariable Long id){
         return ResponseEntity.ok(userService.deleteUser(id));
     }
 
-    @PutMapping("/admin/user/update/{id}")
-    public ResponseEntity<UserDTO> updateUser(@PathVariable Long id, UserUpdateDTO userUpdate){
+    @PutMapping("/admin/user/{id}")
+    public ResponseEntity<UserServiceImpl.ResponseUserUpdateValidationResource> updateUser(@PathVariable Long id, @RequestBody UserUpdateDTO userUpdate) {
+
         return ResponseEntity.ok(userService.updateUser(id,userUpdate));
     }
 
