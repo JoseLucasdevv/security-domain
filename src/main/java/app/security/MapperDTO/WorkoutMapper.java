@@ -36,7 +36,7 @@ public class WorkoutMapper {
     }
 
 
-    public static WorkoutDTO<?> workoutToDTO(Workout workout){
+    public static WorkoutDTO<String> workoutToDTO(Workout workout){
 
 
         return new WorkoutDTO<>(workout.getId()
