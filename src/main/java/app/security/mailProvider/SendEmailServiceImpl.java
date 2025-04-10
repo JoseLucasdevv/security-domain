@@ -1,8 +1,10 @@
 package app.security.mailProvider;
 
+import app.security.domain.CodeVerifyEmail;
 import app.security.domain.EmailConfirmationToken;
 import app.security.domain.ForgotPasswordToken;
 import app.security.exceptions.Exception;
+import app.security.repository.CodeVerifyEmailRepository;
 import app.security.repository.EmailConfirmationTokenRepository;
 import app.security.repository.ForgotPasswordTokenRepository;
 import jakarta.mail.MessagingException;
@@ -15,6 +17,7 @@ import org.springframework.stereotype.Service;
 @RequiredArgsConstructor
 @Service
 public class SendEmailServiceImpl implements SendEmailService {
+    private final CodeVerifyEmailRepository codeVerifyEmailRepository;
     private final ForgotPasswordTokenRepository forgotTokenRepository;
     private final EmailConfirmationTokenRepository emailConfirmationTokenRepository;
     private final JavaMailSender sender;
@@ -87,6 +90,34 @@ public class SendEmailServiceImpl implements SendEmailService {
 
     @Override
     public void SendCodeVerifyEmail(String code) {
+        // logic send code to email
+        try{
+            CodeVerifyEmail codeVerifyEmail = this.codeVerifyEmailRepository.findCodeVerifyEmailByCode(code).orElseThrow(()-> new Exception("Can't find this code",HttpStatus.BAD_REQUEST));
+            if(!codeVerifyEmail.getUser().getEmailConfirmed()) throw new Exception("you don't even has an email confirmed",HttpStatus.BAD_REQUEST);
+
+            MimeMessage message = sender.createMimeMessage();
+            MimeMessageHelper helper = new MimeMessageHelper(message, true);
+            helper.setTo(codeVerifyEmail.getUser().getEmail());
+            helper.setSubject("Send Verification Code - WorkoutAPI Registration");
+            helper.setText("<html>" +
+                            "<body>" +
+                            "<h2>Dear " + codeVerifyEmail.getUser().getName() + ",</h2>" +
+                            "<br/>" +
+                            "<h1>Your Code Verification is:" + codeVerifyEmail.getCode() + "</h1>" +
+                            "<p>Se você não solicitou esta alteração, ignore este e-mail.</p>" +
+                            "<br>Regards,<br>" +
+                            "WorkoutAPI team" +
+
+                            "</body>" +
+                            "</html>",
+                    true);
+
+
+            sender.send(message);
+        } catch (MessagingException e) {
+            throw new Exception(e.getMessage(),HttpStatus.BAD_REQUEST);
+        }
+
 
     }
 
