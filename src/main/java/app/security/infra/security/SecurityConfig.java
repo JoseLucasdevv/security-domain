@@ -40,10 +40,13 @@ public class SecurityConfig{
                         requestMatchers(HttpMethod.POST,"api/forgot-password").permitAll()
                         .requestMatchers(HttpMethod.POST,"api/reset-password").permitAll()
 
+
                         //Just authenticated.
                         .requestMatchers(HttpMethod.GET,"api/resend-email").authenticated().
                         requestMatchers(HttpMethod.POST,"api/logOut").authenticated()
                         .requestMatchers(HttpMethod.DELETE,"api/user").authenticated()
+                        .requestMatchers(HttpMethod.PATCH,"api/user").authenticated()
+                        .requestMatchers(HttpMethod.GET,"api/user/send-code").authenticated()
                         // TeacherConsumer
                         .requestMatchers(HttpMethod.GET,"api/teacher/users/**").access(authorizationManagerFactory.emailConfirmedAndRole("TEACHER"))
                         .requestMatchers(HttpMethod.GET,"api/teacher/user/**").access(authorizationManagerFactory.emailConfirmedAndRole("TEACHER"))
@@ -70,10 +73,12 @@ public class SecurityConfig{
         http.exceptionHandling( exh -> exh.authenticationEntryPoint(
                 (request, response, ex) -> {
 
-        response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
-        response.getWriter().write("couldn't authenticate: " + ex.getMessage());
+        response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);response.setContentType("application/json");
 
+        String errorMessage = ex.getMessage();
+        String jsonResponse = String.format("{\"error\": \"%s\"}", errorMessage);
 
+        response.getWriter().write(jsonResponse);
 
 }
 ));
