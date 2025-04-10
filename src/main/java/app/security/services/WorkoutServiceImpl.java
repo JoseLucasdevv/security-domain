@@ -21,6 +21,8 @@ import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.UUID;
+
 @RequiredArgsConstructor
 @Transactional
 @Slf4j
@@ -39,7 +41,7 @@ public class WorkoutServiceImpl implements WorkoutService {
 
 
         listWorkoutDomain.forEach(w ->{
-            WorkoutDTO<String> workoutDTO = (WorkoutDTO<String>) WorkoutMapper.workoutToDTO(w);
+            WorkoutDTO<String> workoutDTO = WorkoutMapper.workoutToDTO(w);
             listWorkoutDTO.add(workoutDTO);
         });
 
@@ -51,13 +53,14 @@ public class WorkoutServiceImpl implements WorkoutService {
         List<Workout> listWorkout = this.userRepository.getAllWorkoutFromUser(TypeRole.USER,username);
         Workout workout =  listWorkout.stream().filter(w -> workoutId.equals(w.getId())).findFirst().orElse(null);
 
-        assert workout != null;
-        return (WorkoutDTO<String>) WorkoutMapper.workoutToDTO(workout);
+        if(workout == null) throw new Exception("couldn't find this workout",HttpStatus.NOT_FOUND);
+
+        return WorkoutMapper.workoutToDTO(workout);
         // return this.workoutRepository.findById(workoutId).orElseThrow(() ->  new EntityNotFoundException("Workout not found"));
     }
 
     @Override
-    public void deleteWorkoutById(Long userId, Long workoutId) {
+    public void deleteWorkoutById(UUID userId, Long workoutId) {
 
         User user = this.userRepository.getUserById(TypeRole.USER,userId);
         user.getWorkout().stream().filter(w -> w.getId().equals(workoutId)).findFirst().orElseThrow(()-> new app.security.exceptions.Exception("this workout doesn't exist",HttpStatus.NOT_FOUND));
@@ -67,9 +70,9 @@ public class WorkoutServiceImpl implements WorkoutService {
     }
 
     @Override
-    public UserDTO createWorkout(Long userId, WorkoutCreateDTO workout, String nameOfTeacher) {
+    public UserDTO createWorkout(UUID userUid, WorkoutCreateDTO workout, String nameOfTeacher) {
         WorkoutDTO<User> workoutDto = new WorkoutDTO<>(null,workout.name(),workout.series(),workout.weekday(),workout.muscularGroup(), workout.description(),null,null,null,null);
-        User user = this.userRepository.getUserById(TypeRole.USER,userId);
+        User user = this.userRepository.getUserById(TypeRole.USER,userUid);
         User userTeacher = this.userRepository.findByUsername(nameOfTeacher);
         Workout workoutEntity = WorkoutMapper.DtoToWorkout(workoutDto,userTeacher.getName(),user);
         user.getWorkout().add(workoutEntity);
@@ -78,14 +81,14 @@ public class WorkoutServiceImpl implements WorkoutService {
         this.userRepository.save(user);
 
 
-        return UserMapper.UserToDTO(this.userRepository.getUserById(TypeRole.USER,userId));
+        return UserMapper.UserToDTO(this.userRepository.getUserById(TypeRole.USER,userUid));
     }
 
     @Override
-    public UserDTO updateWorkout(Long workoutId, Long userId, WorkoutUpdateDTO workout, String nameOfTeacher) {
+    public UserDTO updateWorkout(Long workoutId, UUID userUid, WorkoutUpdateDTO workout, String nameOfTeacher) {
         log.info("workout User {}" , workout);
 
-        User user = this.userRepository.getUserById(TypeRole.USER,userId);
+        User user = this.userRepository.getUserById(TypeRole.USER,userUid);
         if(user == null) throw new app.security.exceptions.Exception("user not found",HttpStatus.NOT_FOUND);
         User userTeacher = this.userRepository.findByUsername(nameOfTeacher);
         if(userTeacher == null) throw new app.security.exceptions.Exception("userTeacher not found",HttpStatus.NOT_FOUND);
@@ -100,7 +103,7 @@ public class WorkoutServiceImpl implements WorkoutService {
 
         workoutRepository.save(WorkoutUpdateValidation.validationUpdate(workoutAlreadyExist,workout,userTeacher));
 
-        return UserMapper.UserToDTO(this.userRepository.getUserById(TypeRole.USER,userId));
+        return UserMapper.UserToDTO(this.userRepository.getUserById(TypeRole.USER,userUid));
 
 
     }
