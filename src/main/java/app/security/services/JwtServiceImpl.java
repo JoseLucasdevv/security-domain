@@ -29,6 +29,7 @@ public class JwtServiceImpl implements JwtService{
                     .withClaim("Email-Confirmed",user.getEmailConfirm())
                     .withClaim("Email",user.getEmail())
                     .withClaim("Name",user.getName())
+                    .withClaim("uid",user.getUid())
                     .withIssuer("security-domain")
                     .withSubject(user.getUsername())
                     .withExpiresAt(GenerateExpirationDate.genExpirationDate(30L))
