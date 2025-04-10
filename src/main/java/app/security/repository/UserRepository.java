@@ -12,17 +12,19 @@ import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
+import java.util.Optional;
+import java.util.UUID;
 
 @Repository
 public interface UserRepository extends JpaRepository<User , Long> {
-
+    Optional<User> findByUid(UUID uid);
     User findByUsername(String username);
     User findByEmail(String email);
     @Query("SELECT u FROM User u WHERE u.role.name = :role_name")
     Page<User> getAllByRoleNameUser(@Param("role_name") TypeRole roleName,Pageable page);
 
-    @Query("SELECT u FROM User u WHERE u.role.name = :role_name AND u.id = :user_id")
-    User getUserById(@Param("role_name") TypeRole roleName ,@Param ("user_id") long id);
+    @Query("SELECT u FROM User u WHERE u.role.name = :role_name AND u.uid = :user_uid")
+    User getUserById(@Param("role_name") TypeRole roleName ,@Param ("user_uid") UUID uid);
 
     @Query("SELECT u.workout FROM User u WHERE u.role.name = :role_name AND u.username = :username")
     List<Workout> getAllWorkoutFromUser(@Param("role_name")TypeRole roleName,String username);
