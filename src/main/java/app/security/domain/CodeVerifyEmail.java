@@ -1,11 +1,17 @@
 package app.security.domain;
 
 import jakarta.persistence.*;
+import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 import org.springframework.data.annotation.CreatedDate;
 import java.time.Instant;
 import java.time.LocalDateTime;
 
+
+@Table(name = "code_verification")
+@AllArgsConstructor
+@NoArgsConstructor
 @Data
 @Entity
 public class CodeVerifyEmail {
@@ -13,7 +19,7 @@ public class CodeVerifyEmail {
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
     @Column(nullable = false, unique = true)
-    private String token;
+    private String code;
 
     @Column(nullable = false)
     @CreatedDate
