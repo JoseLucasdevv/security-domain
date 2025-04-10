@@ -10,6 +10,8 @@ import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashSet;
+import java.util.UUID;
+
 
 @Entity
 @Data
@@ -19,6 +21,8 @@ public class User {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
+    @Column(nullable = false,unique = true, updatable = false)
+    private UUID uid;
     private String name;
     private String username;
     private String email;
@@ -43,8 +47,18 @@ public class User {
     private Collection<CodeVerifyEmail> codeVerifyEmail = new ArrayList<>();
 
 
+    @PrePersist
+    private void prePersistUid(){
+        UUID uuidGenerated = UUID.randomUUID();
+        this.setUid(uuidGenerated);
+    }
+
     @Override
     public String toString() {
         return this.id + " " + this.name;
+    }
+
+    public String getUid(){
+        return this.uid.toString();
     }
 }
