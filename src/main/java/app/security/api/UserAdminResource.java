@@ -1,9 +1,9 @@
-package app.security.api;
+    package app.security.api;
 
 import app.security.Enum.TypeRole;
 import app.security.dto.RegisterDTO;
 import app.security.dto.UserDTO;
-import app.security.dto.UserUpdateDTO;
+import app.security.dto.UserDTOIn;
 import app.security.exceptions.Exception;
 import app.security.exceptions.HashError;
 import app.security.services.AuthService;
@@ -13,9 +13,9 @@ import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-
 import java.util.HashMap;
 import java.util.List;
+import java.util.UUID;
 
 
 @RestController
@@ -56,20 +56,20 @@ public class UserAdminResource {
 
     }
 
-    @GetMapping("/admin/user/{id}")
-    public ResponseEntity<UserDTO> getUserById(@PathVariable Long id){
-        return ResponseEntity.ok(userService.getUserById(id));
+    @GetMapping("/admin/user/{uid}")
+    public ResponseEntity<UserDTO> getUserById(@PathVariable String uid){
+        return ResponseEntity.ok(userService.getUserByUid(UUID.fromString(uid)));
     }
 
-    @DeleteMapping("/admin/user/{id}")
-    public ResponseEntity<UserDTO> deleteUser(@PathVariable Long id){
-        return ResponseEntity.ok(userService.deleteUser(id));
+    @DeleteMapping("/admin/user/{uid}")
+    public ResponseEntity<UserDTO> deleteUser(@PathVariable String uid){
+        return ResponseEntity.ok(userService.deleteUser(UUID.fromString(uid)));
     }
 
-    @PutMapping("/admin/user/{id}")
-    public ResponseEntity<UserServiceImpl.ResponseUserUpdateValidationResource> updateUser(@PathVariable Long id, @RequestBody UserUpdateDTO userUpdate) {
+    @PutMapping("/admin/user/{uid}")
+        public ResponseEntity<UserServiceImpl.ResponseUserUpdateValidationResource> updateUser(@PathVariable String uid, @RequestBody UserDTOIn userUpdate) {
 
-        return ResponseEntity.ok(userService.updateUser(id,userUpdate));
+        return ResponseEntity.ok(userService.updateUser(UUID.fromString(uid),userUpdate));
     }
 
     @GetMapping("/admin/users/{role}/{pageNumber}")
