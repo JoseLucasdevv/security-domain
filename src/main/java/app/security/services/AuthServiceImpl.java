@@ -17,7 +17,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.time.Instant;
@@ -25,6 +25,8 @@ import java.util.List;
 
 @Service
 public class AuthServiceImpl implements AuthService {
+    @Autowired
+    private PasswordEncoder passwordEncoder;
     @Autowired
     private SendEmailService sendEmailService;
     @Autowired
@@ -52,7 +54,7 @@ public class AuthServiceImpl implements AuthService {
 
         createUserValidation.RegisterValidation(form);
 
-        String encryptedPassword = new BCryptPasswordEncoder().encode(form.password());
+        String encryptedPassword = this.passwordEncoder.encode(form.password());
         User persistUser = UserMapper.DtoToUser(new UserDTOIn(form.name(),form.username(), form.email(), encryptedPassword));
         Role roleUser = new Role();
         roleUser.setName(role);
