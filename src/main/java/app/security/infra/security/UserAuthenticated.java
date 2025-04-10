@@ -9,6 +9,7 @@ import org.springframework.security.core.userdetails.UserDetails;
 
 import java.util.Collection;
 import java.util.List;
+import java.util.UUID;
 
 @RequiredArgsConstructor
 public class UserAuthenticated implements UserDetails {
@@ -60,6 +61,11 @@ public class UserAuthenticated implements UserDetails {
     public Boolean getEmailConfirm(){
         return user.getEmailConfirmed();
     }
+
+    public String getUid() {
+        return user.getUid();
+    }
+
     public String getEmail(){
         return user.getEmail();
     }
