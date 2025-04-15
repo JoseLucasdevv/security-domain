@@ -1,10 +1,12 @@
 package app.security.api;
 
+import app.security.domain.ChangeEmailToken;
+import app.security.dto.ChangeEmailDTO;
 import app.security.dto.UserUpdateDTO;
-import app.security.exceptions.Exception;
 import app.security.services.EmailService;
 import app.security.services.UserService;
 import app.security.services.UserServiceImpl;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
@@ -44,9 +46,25 @@ public class UserGeneralResource {
     }
 
     @PostMapping("/user/verify-code")
-    public ResponseEntity<Void> verifyCode(@RequestBody String code){
-        this.emailService.verifyCode(code);
+    public ResponseEntity<String> verifyCode(@RequestParam String code){
+
+        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+        String username = auth.getName();
+        ChangeEmailToken changeEmailToken = this.emailService.verifyCode(code,username);
+        return ResponseEntity.ok().body("TokenGenerated: " + changeEmailToken.getToken());
+    }
+    @PostMapping("/user/update-email")
+    public ResponseEntity<Void> emailSenderChangeEmail(@RequestParam String token,@Valid @RequestBody ChangeEmailDTO contentBody){
+        this.emailService.emailSenderChangeEmail(token,contentBody);
         return ResponseEntity.ok().build();
+    }
+
+
+
+    @GetMapping("/user/change-email")
+    public ResponseEntity<String> changeEmail(@RequestParam("token") String token){
+        this.userService.changeEmail(token);
+        return ResponseEntity.ok().body("Ooookay you did it, now you change the email from your account :))");
     }
 
 
