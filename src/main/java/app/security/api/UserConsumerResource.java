@@ -2,7 +2,6 @@ package app.security.api;
 
 
 import app.security.dto.WorkoutDTO;
-import app.security.services.UserService;
 import app.security.services.WorkoutService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
