@@ -23,6 +23,7 @@ public interface UserService {
     UserDTO getUserByEmail(String email);
     UserDTO deleteUser(UUID uid);
     void deleteUserByUsername(String username);
+    void changeEmail(String token);
     UserServiceImpl.ResponseUserUpdateValidationResource updateUserByUsername(String username, UserUpdateDTO userUpdateDTO);
     UserServiceImpl.ResponseUserUpdateValidationResource updateUser(UUID uid, UserDTOIn userUpdateDTO);
     List<UserDTO> getAllUsersWithRole(TypeRole role, int pageNumber);
