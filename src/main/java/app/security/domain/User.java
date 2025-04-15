@@ -45,6 +45,10 @@ public class User {
     private Collection<ForgotPasswordToken> forgotPasswordTokens = new ArrayList<>();
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
     private Collection<CodeVerifyEmail> codeVerifyEmail = new ArrayList<>();
+    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
+    private Collection<ChangeEmailToken> changeEmailToken = new ArrayList<>();
+    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
+    private Collection<SetNewEmailToken> newEmailToken = new ArrayList<>();
 
 
     @PrePersist
