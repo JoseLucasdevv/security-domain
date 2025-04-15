@@ -2,6 +2,7 @@ package app.security.domain;
 
 import app.security.Enum.TypeRole;
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -17,9 +18,11 @@ import java.util.Collection;
 public class Role {
     @Id @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
+    @Column(nullable = false)
     @Enumerated(EnumType.STRING)
     private TypeRole name;
     @OneToMany(mappedBy = "role", cascade = CascadeType.ALL, orphanRemoval = true)
     @JsonIgnore
+    @JsonManagedReference
     private Collection<User> users = new ArrayList<>();
 }
