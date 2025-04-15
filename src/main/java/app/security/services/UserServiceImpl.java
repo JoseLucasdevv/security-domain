@@ -1,10 +1,12 @@
 package app.security.services;
 import app.security.Enum.TypeRole;
 import app.security.MapperDTO.UserMapper;
+import app.security.domain.SetNewEmailToken;
 import app.security.domain.User;
 import app.security.dto.UserDTOIn;
 import app.security.dto.UserUpdateDTO;
 import app.security.exceptions.Exception;
+import app.security.repository.SetNewEmailTokenRepository;
 import app.security.repository.UserRepository;
 import app.security.dto.UserDTO;
 import app.security.services.validations.ResponseUserUpdateValidation;
@@ -17,6 +19,8 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
+
+import java.time.Instant;
 import java.util.List;
 import java.util.Map;
 import java.util.UUID;
@@ -26,7 +30,7 @@ import java.util.UUID;
 @RequiredArgsConstructor
 @Slf4j
 public class UserServiceImpl implements UserService {
-
+    private final SetNewEmailTokenRepository setNewEmailTokenRepository;
     private final UserUpdateGeneralValidation userUpdateGeneralValidation;
     private final UserUpdateValidation userUpdateValidation;
     private final UserRepository userRepository;
@@ -107,6 +111,22 @@ public class UserServiceImpl implements UserService {
     @Override
     public void deleteUserByUsername(String username) {
         this.userRepository.deleteUserByUsername(username);
+    }
+
+    @Override
+    public void changeEmail(String token) {
+        SetNewEmailToken setNewEmailToken = this.setNewEmailTokenRepository.
+                findByToken(token)
+                .orElseThrow(() -> new Exception("the token is invalid", HttpStatus.NOT_FOUND));
+
+        if(setNewEmailToken.getExpiresAt().isBefore(Instant.now())) throw new Exception("the token was expired",HttpStatus.FORBIDDEN);
+        String email = setNewEmailToken.getNewEmail();
+        User user = setNewEmailToken.getUser();
+
+        user.setEmail(email);
+
+        this.userRepository.save(user);
+
     }
 
     @Override
