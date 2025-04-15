@@ -2,6 +2,7 @@ package app.security.domain;
 
 import app.security.Enum.MuscularGroup;
 import app.security.Enum.WeekDay;
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
@@ -20,19 +21,25 @@ public class Workout {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
+    @Column(nullable = false)
     private String name;
+    @Column(nullable = false)
     private String series;
+    @Column(nullable = false)
     @Enumerated(EnumType.STRING)
     private MuscularGroup muscularGroup;
+    @Column(nullable = false)
     @Enumerated(EnumType.STRING)
     private WeekDay weekday;
     private String description;
+    @Column(nullable = false)
     private String nameOfTeacher;
+    @Column(nullable = false)
     private LocalDateTime createdAt;
     private LocalDateTime updatedAt;
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id", nullable = false)
-    @JsonIgnore
+    @JsonBackReference
     private User user;
 
     @PrePersist
