@@ -3,6 +3,7 @@ package app.security.mailProvider;
 import app.security.domain.CodeVerifyEmail;
 import app.security.domain.EmailConfirmationToken;
 import app.security.domain.ForgotPasswordToken;
+import app.security.domain.SetNewEmailToken;
 import app.security.exceptions.Exception;
 import app.security.repository.CodeVerifyEmailRepository;
 import app.security.repository.EmailConfirmationTokenRepository;
@@ -121,7 +122,39 @@ public class SendEmailServiceImpl implements SendEmailService {
 
     }
 
-    private String generateConfirmationLink(String token){
+    @Override
+    public void sendChangeEmailUpdate(SetNewEmailToken setNewEmailToken) {
+        try{
+
+
+            MimeMessage message = sender.createMimeMessage();
+            MimeMessageHelper helper = new MimeMessageHelper(message, true);
+            helper.setTo(setNewEmailToken.getNewEmail());
+            helper.setSubject("UpdateEmail - WorkoutAPI");
+            helper.setText("<html>" +
+                            "<body>" +
+                            "<h2>Dear "+ setNewEmailToken.getUser().getName() + ",</h2>" +
+                            "Please click on below link to Change Email from your account."
+                            + "<br/> "  + generateConfirmationLinkChangeEmail(setNewEmailToken.getToken())+"" +
+                            "<br/> Regards,<br/>" +
+                            "WorkoutAPI team" +
+                            "</body>" +
+                            "</html>"
+                    , true);
+
+            sender.send(message);
+        } catch (MessagingException e) {
+            throw new Exception(e.getMessage(),HttpStatus.BAD_REQUEST);
+        }
+
+
+    }
+
+    private String generateConfirmationLinkChangeEmail(String token) {
+        return "<a href=http://localhost:8080/api/user/change-email?token=" + token + ">Change Email</a>";
+    }
+
+        private String generateConfirmationLink(String token){
         return "<a href=http://localhost:8080/api/confirm-email?token="+token+">Confirm Email</a>";
     }
 
