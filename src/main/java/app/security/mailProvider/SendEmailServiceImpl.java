@@ -57,7 +57,7 @@ public class SendEmailServiceImpl implements SendEmailService {
     public void sendForgotPasswordLink(String token) {
 
         try{
-            // code review --> maybe it doesn't need visit the database.
+            // code review --> maybe it doesn't needs visit the database.
             ForgotPasswordToken forgotPasswordToken = this.forgotTokenRepository.findByToken(token).orElseThrow(() -> new Exception("Can't find this EmailConfirmationToken", HttpStatus.NOT_FOUND));
 
 
@@ -68,12 +68,8 @@ public class SendEmailServiceImpl implements SendEmailService {
             helper.setText("<html>" +
                             "<body>" +
                             "<h2>Dear " + forgotPasswordToken.getUser().getName() + ",</h2>" +
-                            "<p>Você solicitou a recuperação de sua senha. Use o formulário abaixo para definir uma nova senha:</p>" +
-                            "<form action=\"" + createActionForm(token) + "\" method=\"post\">" +
-                            "<label for=\"newPassword\">Nova senha:</label><br>" +
-                            "<input name=\"newPassword\" title=\"one number and one uppercase and lowercase letter, and at least 8 or more characters\" type=\"password\" required/><br><br>" +
-                            "<button class=\"submitBtn\" type=\"submit\">Reset Password</button>" +
-                            "</form>" +
+                            "<p>Você solicitou a recuperação de sua senha." +
+                            "<a href="+createLinkResetPassword(forgotPasswordToken.getToken())+">Click on this link to change your password</a>" +
                             "<p>Se você não solicitou esta alteração, ignore este e-mail.</p>" +
                             "<br>Regards,<br>" +
                             "WorkoutAPI team" +
@@ -91,7 +87,6 @@ public class SendEmailServiceImpl implements SendEmailService {
 
     @Override
     public void SendCodeVerifyEmail(String code) {
-        // logic send code to email
         try{
             CodeVerifyEmail codeVerifyEmail = this.codeVerifyEmailRepository.findCodeVerifyEmailByCode(code).orElseThrow(()-> new Exception("Can't find this code",HttpStatus.BAD_REQUEST));
             if(!codeVerifyEmail.getUser().getEmailConfirmed()) throw new Exception("you don't even has an email confirmed",HttpStatus.BAD_REQUEST);
@@ -158,10 +153,7 @@ public class SendEmailServiceImpl implements SendEmailService {
         return "<a href=http://localhost:8080/api/confirm-email?token="+token+">Confirm Email</a>";
     }
 
-
-    private String createActionForm(String token){
-        return "http://localhost:8080/api/reset-password?token="+token;
+    private String createLinkResetPassword(String token){
+        return "http://127.0.0.1:3000?token="+token;
     }
 }
-
-
