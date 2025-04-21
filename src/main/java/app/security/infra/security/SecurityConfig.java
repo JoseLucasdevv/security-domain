@@ -18,16 +18,18 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
+import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
+
 @RequiredArgsConstructor
 @Configuration
 @EnableWebSecurity
 public class SecurityConfig{
     private final AuthorizationManagerFactory authorizationManagerFactory;
     private final FilterValidateJWT filterValidateJWT;
-
+    private final UrlBasedCorsConfigurationSource corsConfigurationSource;
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
-
+    http.cors((cors)-> cors.configurationSource(this.corsConfigurationSource));
         http.csrf(AbstractHttpConfigurer::disable)
                 .sessionManagement(httpSecuritySessionManagementConfigurer -> httpSecuritySessionManagementConfigurer
                         .sessionCreationPolicy(SessionCreationPolicy.STATELESS))
@@ -38,7 +40,7 @@ public class SecurityConfig{
                         requestMatchers(HttpMethod.POST,"/api/refresh_token").permitAll().
                         requestMatchers(HttpMethod.GET,"/api/confirm-email").permitAll().
                         requestMatchers(HttpMethod.POST,"/api/forgot-password").permitAll()
-                        .requestMatchers(HttpMethod.POST,"/api/reset-password").permitAll()
+                        .requestMatchers(HttpMethod.POST,"/api/reset-password/**").permitAll()
                         .requestMatchers(HttpMethod.GET,"/api/user/change-email/**").permitAll()
 
                         //Just authenticated.
@@ -99,6 +101,5 @@ public class SecurityConfig{
     public AuthenticationManager authenticationManager (AuthenticationConfiguration authenticationConfiguration) throws Exception{
         return  authenticationConfiguration.getAuthenticationManager();
     }
-
 
 }
