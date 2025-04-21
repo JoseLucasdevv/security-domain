@@ -30,7 +30,7 @@ public class ForgotPasswordResource {
     }
 
     @PostMapping("/reset-password")
-    public ResponseEntity<?> resetPassword(@RequestParam("token") String token, @Valid @ModelAttribute ResetPasswordIn newPassword){
+    public ResponseEntity<?> resetPassword(@RequestParam("token") String token, @Valid @RequestBody ResetPasswordIn newPassword){
         try{
             System.out.println(newPassword.newPassword());
                 resetPasswordService.resetPassword(token,newPassword.newPassword());
